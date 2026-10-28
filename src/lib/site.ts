@@ -1,3 +1,5 @@
+import { nextMatch } from "@/lib/matches";
+
 export const siteConfig = {
   name: "Nansana ASKA",
   fullName: "Nansana ASKA Futsal Club",
@@ -16,9 +18,7 @@ export const navLinks = [
   { label: "Contact", href: "/contact" },
 ];
 
-// SAMPLE DATA: copied from the Stitch design, not confirmed with the club.
-// The design shows "Matchday 14" here but "Matchday 8" in the fixtures card.
-// Replace with real data (one source of truth) before launch.
+// Derived from the same (sample) data as the Match Centre.
 export const nextFixture = {
-  label: "Matchday 14 vs Park FC",
+  label: `Matchday ${nextMatch.matchday} vs ${nextMatch.away.name}`,
 };

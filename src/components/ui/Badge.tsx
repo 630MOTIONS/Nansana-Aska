@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-type Variant = "orange" | "gold" | "tint" | "onDark";
+type Variant = "orange" | "gold" | "navy" | "tint" | "onDark";
 
 type BadgeProps = {
   variant?: Variant;
@@ -14,6 +14,7 @@ const base =
 const variants: Record<Variant, string> = {
   orange: "bg-brand-orange text-ink",
   gold: "bg-brand-gold text-ink",
+  navy: "bg-navy text-white",
   tint: "bg-surface-tint text-navy",
   onDark: "bg-white/10 text-gold-soft",
 };
