@@ -4,6 +4,7 @@ type SectionHeadingProps = {
   title: string;
   eyebrow?: string;
   eyebrowIcon?: ReactNode;
+  eyebrowTone?: "navy" | "gold"; // label colour on light backgrounds
   description?: string;
   align?: "left" | "center";
   tone?: "light" | "dark"; // light = on light background, dark = on dark background
@@ -15,6 +16,7 @@ export default function SectionHeading({
   title,
   eyebrow,
   eyebrowIcon,
+  eyebrowTone = "navy",
   description,
   align = "left",
   tone = "light",
@@ -22,6 +24,12 @@ export default function SectionHeading({
   className,
 }: SectionHeadingProps) {
   const isDark = tone === "dark";
+  const eyebrowColour = isDark
+    ? "text-gold-soft"
+    : eyebrowTone === "gold"
+      ? "text-gold-deep"
+      : "text-navy";
+
   const classes = [
     "flex flex-col gap-2",
     align === "center" ? "items-center text-center" : "items-start text-left",
@@ -34,9 +42,7 @@ export default function SectionHeading({
     <div className={classes}>
       {eyebrow && (
         <p
-          className={`inline-flex items-center gap-2 text-label font-bold uppercase tracking-widest ${
-            isDark ? "text-gold-soft" : "text-navy"
-          }`}
+          className={`inline-flex items-center gap-2 text-label font-bold uppercase tracking-widest ${eyebrowColour}`}
         >
           {eyebrowIcon}
           {eyebrow}
