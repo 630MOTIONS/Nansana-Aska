@@ -3,7 +3,7 @@
 /* ==========================================================================
    Design tokens — Nansana ASKA Futsal Club
    Brand colours marked (spec) come from the design spec. Colours marked
-   (sampled) were measured from the approved Stitch homepage screenshots.
+   (sampled) were measured from the approved Stitch screenshots.
    ========================================================================== */
 
 @theme {
@@ -17,8 +17,10 @@
   --color-navy: #003d87; /* hero, primary buttons, footer */
   --color-navy-deep: #001a41; /* gallery section */
   --color-gold-soft: #ffe088; /* gold text on dark backgrounds */
+  --color-gold-deep: #735c00; /* gold text on light backgrounds */
   --color-surface: #f9f9ff; /* page background */
   --color-surface-tint: #f1f3ff; /* tinted sections, stat strips */
+  --color-surface-strong: #e9edff; /* leadership section */
   --color-ink: #061a3c; /* headings and body text */
   --color-ink-muted: #43526d; /* secondary text (approximate) */
 
