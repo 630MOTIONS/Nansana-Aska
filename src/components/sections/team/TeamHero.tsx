@@ -1,24 +1,42 @@
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
+import Photo from "@/components/ui/Photo";
 import { heroStats } from "@/lib/team";
+import { photos } from "@/lib/photos";
+import type { PhotoAsset } from "@/lib/photos";
 
 function Tile({
   className,
   kicker,
   title,
+  photo,
   large = false,
 }: {
   className?: string;
   kicker: string;
   title?: string;
+  photo?: PhotoAsset;
   large?: boolean;
 }) {
   return (
     <div
       className={`relative overflow-hidden rounded-xl shadow-card ${className ?? ""}`}
     >
-      <MediaPlaceholder className="h-full w-full" />
+      {photo ? (
+        <Photo
+          photo={photo}
+          decorative
+          priority={large}
+          sizes={
+            large
+              ? "(min-width: 1024px) 560px, 100vw"
+              : "(min-width: 1024px) 280px, 50vw"
+          }
+        />
+      ) : (
+        <MediaPlaceholder className="h-full w-full" />
+      )}
       <div
         className="absolute inset-0 bg-linear-to-t from-navy-deep/85 via-transparent to-transparent"
         aria-hidden="true"
@@ -99,9 +117,14 @@ export default function TeamHero() {
             className="col-span-2 aspect-[16/11]"
             kicker="FAU Super League contenders"
             title="Men’s senior division"
+            photo={photos.menTeam}
           />
           <Tile className="aspect-[16/10]" kicker="High-intensity speed" />
-          <Tile className="aspect-[16/10]" kicker="Women’s Super League" />
+          <Tile
+            className="aspect-[16/10]"
+            kicker="Women’s Super League"
+            photo={photos.womenTeam}
+          />
         </div>
       </div>
     </section>

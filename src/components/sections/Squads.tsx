@@ -1,9 +1,8 @@
-import { ShieldCheck } from "lucide-react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ShieldCheck } from "lucide-react";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
-import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
+import Photo from "@/components/ui/Photo";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { squads } from "@/lib/squads";
 
@@ -18,15 +17,19 @@ export default function Squads() {
           eyebrowIcon={
             <ShieldCheck size={16} className="text-brand-orange" aria-hidden />
           }
-          title="Our squads \u2014 two teams, one shared ambition"
-          description="From high-velocity tactical transitions on the court to empowering the next generation of youth talent in Nansana, our men\u2019s and women\u2019s teams embody our sporting standard."
+          title="Our squads — two teams, one shared ambition"
+          description="From high-velocity tactical transitions on the court to empowering the next generation of youth talent in Nansana, our men’s and women’s teams embody our sporting standard."
         />
 
         <div className="mt-10 grid gap-6 md:grid-cols-2">
           {squads.map((squad) => (
             <Card key={squad.id} as="article" className="flex flex-col">
-              <div className="relative">
-                <MediaPlaceholder className="aspect-[16/10]" />
+              <div className="relative aspect-[16/10]">
+                <Photo
+                  photo={squad.photo}
+                  decorative
+                  sizes="(min-width: 1152px) 560px, (min-width: 768px) 50vw, 100vw"
+                />
                 <div
                   className="absolute inset-0 bg-linear-to-t from-navy-deep/90 via-navy-deep/20 to-transparent"
                   aria-hidden="true"

@@ -1,6 +1,7 @@
 import Badge from "@/components/ui/Badge";
-import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
+import Photo from "@/components/ui/Photo";
 import { identityStats } from "@/lib/team";
+import { photos } from "@/lib/photos";
 
 export default function ClubIdentity() {
   return (
@@ -40,8 +41,11 @@ export default function ClubIdentity() {
             </dl>
           </div>
 
-          <div className="relative overflow-hidden rounded-xl">
-            <MediaPlaceholder className="aspect-[4/3]" />
+          <div className="relative aspect-[4/3] overflow-hidden rounded-xl">
+            <Photo
+              photo={photos.fullTeam}
+              sizes="(min-width: 1024px) 520px, 100vw"
+            />
             <div
               className="absolute inset-0 bg-linear-to-t from-navy-deep/85 via-transparent to-transparent"
               aria-hidden="true"
