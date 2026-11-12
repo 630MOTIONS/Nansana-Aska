@@ -1,23 +1,22 @@
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Building2, CalendarDays, Shield } from "lucide-react";
+import { ArrowLeft, Building2, CalendarDays } from "lucide-react";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import TeamLogo from "@/components/ui/TeamLogo";
+import { getClubLogo } from "@/lib/clubs";
 import { competitions, formatLongDate } from "@/lib/fixtures";
 import type { Fixture, TeamRef } from "@/lib/fixtures";
-import { siteConfig } from "@/lib/site";
 
 function Side({ team }: { team: TeamRef }) {
   return (
     <div className="flex flex-col items-center gap-3 text-center">
-      <span className="flex h-16 w-16 items-center justify-center rounded-xl bg-white p-2 text-navy shadow-card">
-        {team.isClub ? (
-          <Image src={siteConfig.crest} alt="" width={56} height={56} />
-        ) : (
-          <Shield size={28} aria-hidden />
-        )}
-      </span>
+      <TeamLogo
+        name={team.name}
+        isClub={team.isClub}
+        logo={getClubLogo(team.key)}
+        size="lg"
+      />
       <h2 className="text-section text-navy">{team.name}</h2>
     </div>
   );

@@ -1,3 +1,5 @@
+import { getClubLogo } from "@/lib/clubs";
+import type { ClubLogo } from "@/lib/clubs";
 import {
   competitions,
   completedFixtures,
@@ -18,6 +20,7 @@ export type Team = {
   name: string;
   initials: string;
   isClub?: boolean;
+  logo?: ClubLogo;
 };
 
 export const clubTeam: Team = {
@@ -39,7 +42,11 @@ function initialsOf(name: string) {
 function toTeam(ref: TeamRef): Team {
   return ref.isClub
     ? clubTeam
-    : { name: ref.name, initials: initialsOf(ref.name) };
+    : {
+        name: ref.name,
+        initials: initialsOf(ref.name),
+        logo: getClubLogo(ref.key),
+      };
 }
 
 function sideNote(team: TeamRef, label: string) {

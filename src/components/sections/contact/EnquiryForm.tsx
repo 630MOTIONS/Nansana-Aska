@@ -7,6 +7,7 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import {
   ENQUIRY_TYPE_EVENT,
   MESSAGE_MIN,
+  apiConfigured,
   emptyEnquiry,
   enquiryTypes,
   submitEnquiry,
@@ -17,9 +18,10 @@ import type {
   EnquiryField,
   EnquiryType,
   EnquiryValues,
+  SubmitResult,
 } from "@/lib/enquiry";
 
-type Status = "idle" | "submitting" | "not-connected";
+type Status = "idle" | "submitting" | SubmitResult["status"];
 
 const fieldIds: Record<EnquiryField, string> = {
   fullName: "enquiry-name",
@@ -120,6 +122,8 @@ export default function EnquiryForm() {
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (status === "submitting") return;
+
     const found = validateEnquiry(values);
     setErrors(found);
 
@@ -133,6 +137,11 @@ export default function EnquiryForm() {
     setStatus("submitting");
     const result = await submitEnquiry(values);
     setStatus(result.status);
+
+    if (result.status === "sent") {
+      setValues(emptyEnquiry);
+      setErrors({});
+    }
   }
 
   return (
@@ -330,11 +339,29 @@ export default function EnquiryForm() {
               disabled={status === "submitting"}
               className="inline-flex items-center justify-center gap-2 rounded-sm bg-brand-orange px-6 py-3 text-button font-bold uppercase tracking-wide text-ink transition-colors hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Submit enquiry <Send size={14} aria-hidden />
+              {status === "submitting" ? "Sending..." : "Submit enquiry"}
+              <Send size={14} aria-hidden />
             </button>
           </div>
 
           <div role="status" aria-live="polite">
+            {status === "sent" && (
+              <p className="mt-4 rounded-md bg-surface-tint p-4 text-sm font-semibold text-navy">
+                Thank you. Your enquiry has been received.
+              </p>
+            )}
+            {status === "rejected" && (
+              <p className="mt-4 rounded-md bg-red-50 p-4 text-sm font-semibold text-red-800">
+                Some of your details weren’t accepted. Please check the form and
+                try again.
+              </p>
+            )}
+            {status === "failed" && (
+              <p className="mt-4 rounded-md bg-red-50 p-4 text-sm font-semibold text-red-800">
+                We couldn’t send your enquiry just now. Please try again in a
+                few minutes.
+              </p>
+            )}
             {status === "not-connected" && (
               <p className="mt-4 rounded-md bg-surface-tint p-4 text-sm font-semibold text-navy">
                 Your details look good, but nothing has been sent, because this
@@ -343,14 +370,20 @@ export default function EnquiryForm() {
             )}
           </div>
 
-          <p className="mt-5 flex gap-3 rounded-md bg-surface-strong p-4 text-sm text-ink-muted">
-            <Info size={18} className="mt-0.5 shrink-0 text-navy" aria-hidden />
-            <span>
-              <strong className="text-navy">Notice:</strong> this form checks
-              your entries but can’t send them yet. Enquiries will only reach
-              the club once the website is connected to its mail service.
-            </span>
-          </p>
+          {!apiConfigured && (
+            <p className="mt-5 flex gap-3 rounded-md bg-surface-strong p-4 text-sm text-ink-muted">
+              <Info
+                size={18}
+                className="mt-0.5 shrink-0 text-navy"
+                aria-hidden
+              />
+              <span>
+                <strong className="text-navy">Notice:</strong> this form checks
+                your entries but can’t send them yet. Enquiries will only reach
+                the club once the website is connected to its mail service.
+              </span>
+            </p>
+          )}
         </form>
       </div>
     </section>

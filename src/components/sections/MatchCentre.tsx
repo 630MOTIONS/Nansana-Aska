@@ -1,13 +1,12 @@
-import Image from "next/image";
 import { CalendarDays, MapPin } from "lucide-react";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import SectionHeading from "@/components/ui/SectionHeading";
+import TeamLogo from "@/components/ui/TeamLogo";
 import TextLink from "@/components/ui/TextLink";
 import { nextMatch, recentResults } from "@/lib/matches";
 import type { MatchResult, Team } from "@/lib/matches";
-import { siteConfig } from "@/lib/site";
 
 const outcomeLabel: Record<MatchResult["outcome"], string> = {
   win: "Win",
@@ -15,43 +14,16 @@ const outcomeLabel: Record<MatchResult["outcome"], string> = {
   loss: "Loss",
 };
 
-function TeamMark({ team, size }: { team: Team; size: "sm" | "lg" }) {
-  const large = size === "lg";
-
-  if (team.isClub) {
-    return (
-      <span
-        className={`flex shrink-0 ${large ? "rounded-xl bg-surface-tint p-2" : ""}`}
-      >
-        <Image
-          src={siteConfig.crest}
-          alt=""
-          width={large ? 64 : 32}
-          height={large ? 64 : 32}
-          className={large ? "h-16 w-16" : "h-8 w-8"}
-        />
-      </span>
-    );
-  }
-
-  return (
-    <span
-      aria-hidden="true"
-      className={`flex shrink-0 items-center justify-center bg-surface-tint font-bold text-ink-muted ${
-        large
-          ? "h-20 w-20 rounded-xl text-xl"
-          : "h-8 w-8 rounded-md text-[0.625rem]"
-      }`}
-    >
-      {team.initials}
-    </span>
-  );
-}
-
 function MatchTeam({ team, note }: { team: Team; note: string }) {
   return (
     <div className="flex flex-col items-center gap-3 text-center">
-      <TeamMark team={team} size="lg" />
+      <TeamLogo
+        name={team.name}
+        initials={team.initials}
+        isClub={team.isClub}
+        logo={team.logo}
+        size="lg"
+      />
       <h3 className="text-card text-navy">{team.name}</h3>
       <Badge>{note}</Badge>
     </div>
@@ -130,7 +102,13 @@ export default function MatchCentre() {
                     className="flex items-center justify-between gap-3"
                   >
                     <span className="flex items-center gap-3">
-                      <TeamMark team={row.team} size="sm" />
+                      <TeamLogo
+                        name={row.team.name}
+                        initials={row.team.initials}
+                        isClub={row.team.isClub}
+                        logo={row.team.logo}
+                        size="sm"
+                      />
                       <span className="font-display text-xl font-extrabold uppercase text-navy">
                         {row.team.name}
                       </span>

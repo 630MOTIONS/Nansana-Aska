@@ -1,7 +1,8 @@
-import Image from "next/image";
-import { MapPin, Shield } from "lucide-react";
+import { MapPin } from "lucide-react";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
+import TeamLogo from "@/components/ui/TeamLogo";
+import { getClubLogo } from "@/lib/clubs";
 import {
   competitions,
   formatLongDate,
@@ -9,7 +10,6 @@ import {
   positionOf,
 } from "@/lib/fixtures";
 import type { Fixture, TeamRef } from "@/lib/fixtures";
-import { siteConfig } from "@/lib/site";
 
 function TeamPanel({ team, label }: { team: TeamRef; label: string }) {
   const position = positionOf(team.key);
@@ -18,13 +18,12 @@ function TeamPanel({ team, label }: { team: TeamRef; label: string }) {
       <p className="text-label font-bold uppercase tracking-widest text-gold-soft">
         {label}
       </p>
-      <span className="flex h-16 w-16 items-center justify-center rounded-xl bg-white p-2 text-gold-deep">
-        {team.isClub ? (
-          <Image src={siteConfig.crest} alt="" width={56} height={56} />
-        ) : (
-          <Shield size={28} aria-hidden />
-        )}
-      </span>
+      <TeamLogo
+        name={team.name}
+        isClub={team.isClub}
+        logo={getClubLogo(team.key)}
+        size="lg"
+      />
       <h3 className="text-section text-white">{team.name}</h3>
       {position && (
         <p className="text-label font-semibold uppercase tracking-wide text-white/70">

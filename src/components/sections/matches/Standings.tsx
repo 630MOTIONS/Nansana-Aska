@@ -1,9 +1,9 @@
-import Image from "next/image";
 import { Trophy } from "lucide-react";
 import Badge from "@/components/ui/Badge";
 import SectionHeading from "@/components/ui/SectionHeading";
+import TeamLogo from "@/components/ui/TeamLogo";
+import { getClubLogo } from "@/lib/clubs";
 import { standings, standingsUpdatedAfter } from "@/lib/fixtures";
-import { siteConfig } from "@/lib/site";
 
 const head =
   "px-3 py-3 text-right text-label font-bold uppercase tracking-wide text-ink-muted";
@@ -81,19 +81,12 @@ export default function Standings() {
                       className="px-3 py-3 text-left font-semibold text-navy"
                     >
                       <span className="inline-flex items-center gap-2">
-                        {isClub ? (
-                          <Image
-                            src={siteConfig.crest}
-                            alt=""
-                            width={24}
-                            height={24}
-                          />
-                        ) : (
-                          <span
-                            className="h-2 w-2 rounded-full bg-ink-muted/50"
-                            aria-hidden="true"
-                          />
-                        )}
+                        <TeamLogo
+                          name={row.team.name}
+                          isClub={isClub}
+                          logo={getClubLogo(row.team.key)}
+                          size="sm"
+                        />
                         {row.team.name}
                         {isClub && <Badge variant="orange">Pride</Badge>}
                       </span>
