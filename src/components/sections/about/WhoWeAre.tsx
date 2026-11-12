@@ -1,15 +1,21 @@
 import { Shield } from "lucide-react";
 import Badge from "@/components/ui/Badge";
-import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
+import Photo from "@/components/ui/Photo";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { identityPoints } from "@/lib/about";
+import { photos } from "@/lib/photos";
 
 export default function WhoWeAre() {
   return (
     <section aria-label="Who we are" className="bg-white py-16">
       <div className="mx-auto grid w-full max-w-site items-center gap-10 px-4 lg:grid-cols-2">
         <div className="relative">
-          <MediaPlaceholder className="aspect-[4/3] overflow-hidden rounded-2xl shadow-card" />
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-card">
+            <Photo
+              photo={photos.fullTeam}
+              sizes="(min-width: 1024px) 560px, 100vw"
+            />
+          </div>
           <Badge
             variant="gold"
             className="absolute -bottom-3 right-4 px-3 py-2 shadow-card"
