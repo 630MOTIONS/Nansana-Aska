@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { Barlow_Condensed, Inter } from "next/font/google";
-import Footer from "@/components/layout/Footer";
-import Header from "@/components/layout/Header";
-import TopBar from "@/components/layout/TopBar";
 import "./globals.css";
 
 const barlowCondensed = Barlow_Condensed({
@@ -28,24 +26,13 @@ export const metadata: Metadata = {
     "Official website of Nansana ASKA Futsal Club, competing in the Uganda Futsal Super League.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
       className={`${barlowCondensed.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-sm focus:bg-white focus:px-4 focus:py-2 focus:font-semibold focus:text-navy"
-        >
-          Skip to content
-        </a>
-        <TopBar />
-        <Header />
-        <div className="flex-1">{children}</div>
-        <Footer />
-      </body>
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }

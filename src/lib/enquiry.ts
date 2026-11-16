@@ -42,6 +42,8 @@ export const emptyEnquiry: EnquiryValues = {
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Keep these rules in step with CreateEnquiryDto in the API. The API checks
+// everything again, so this is only for fast feedback in the browser.
 export function validateEnquiry(values: EnquiryValues): EnquiryErrors {
   const errors: EnquiryErrors = {};
 
@@ -74,16 +76,51 @@ export function validateEnquiry(values: EnquiryValues): EnquiryErrors {
   return errors;
 }
 
-export type SubmitResult = { status: "not-connected" };
+// Set in .env.local, for example http://localhost:3001. Without it the form
+// still validates but cannot send, and says so.
+const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, "");
+export const apiConfigured = Boolean(API_URL);
 
-// There is no backend yet and no confirmed club inbox, so nothing is sent.
-// When the NestJS endpoint exists, replace this function so it posts the
-// values and returns a result the form can show. The form handles the rest.
+export type SubmitResult =
+  | { status: "sent" }
+  | { status: "not-connected" } // no API address configured
+  | { status: "rejected" } // the API refused the details (HTTP 400)
+  | { status: "failed" }; // network error, timeout or server error
+
 export async function submitEnquiry(
   values: EnquiryValues,
 ): Promise<SubmitResult> {
-  void values;
-  return { status: "not-connected" };
+  if (!API_URL) return { status: "not-connected" };
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 15000);
+
+  try {
+    const response = await fetch(`${API_URL}/enquiries`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      // Only the fields the API accepts. It rejects anything extra.
+      body: JSON.stringify({
+        fullName: values.fullName,
+        email: values.email,
+        phone: values.phone,
+        organisation: values.organisation,
+        type: values.type,
+        subject: values.subject,
+        message: values.message,
+        consent: values.consent,
+      }),
+      signal: controller.signal,
+    });
+
+    if (response.ok) return { status: "sent" };
+    if (response.status === 400) return { status: "rejected" };
+    return { status: "failed" };
+  } catch {
+    return { status: "failed" };
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 // Lets buttons elsewhere on the page choose the enquiry type and scroll to the

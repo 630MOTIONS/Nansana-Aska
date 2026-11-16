@@ -5,8 +5,10 @@ import TeamLogo from "@/components/ui/TeamLogo";
 import { getClubLogo } from "@/lib/clubs";
 import { standings, standingsUpdatedAfter } from "@/lib/fixtures";
 
-const head =
-  "px-3 py-3 text-right text-label font-bold uppercase tracking-wide text-ink-muted";
+const headBase =
+  "px-3 py-3 text-label font-bold uppercase tracking-wide text-ink-muted";
+const headLeft = `${headBase} text-left`;
+const headRight = `${headBase} text-right`;
 
 export default function Standings() {
   return (
@@ -27,34 +29,34 @@ export default function Standings() {
             </caption>
             <thead className="bg-surface-tint">
               <tr>
-                <th scope="col" className={`${head} text-left`}>
+                <th scope="col" className={headLeft}>
                   Pos
                 </th>
-                <th scope="col" className={`${head} text-left`}>
+                <th scope="col" className={headLeft}>
                   Club
                 </th>
-                <th scope="col" className={head}>
+                <th scope="col" className={headRight}>
                   P
                 </th>
-                <th scope="col" className={head}>
+                <th scope="col" className={headRight}>
                   W
                 </th>
-                <th scope="col" className={head}>
+                <th scope="col" className={headRight}>
                   D
                 </th>
-                <th scope="col" className={head}>
+                <th scope="col" className={headRight}>
                   L
                 </th>
-                <th scope="col" className={head}>
+                <th scope="col" className={headRight}>
                   GF
                 </th>
-                <th scope="col" className={head}>
+                <th scope="col" className={headRight}>
                   GA
                 </th>
-                <th scope="col" className={head}>
+                <th scope="col" className={headRight}>
                   GD
                 </th>
-                <th scope="col" className={head}>
+                <th scope="col" className={headRight}>
                   Pts
                 </th>
               </tr>
