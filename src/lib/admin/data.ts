@@ -4,6 +4,7 @@ import { getAuth } from "./auth";
 import type {
   AdminCompetition,
   AdminMatch,
+  AdminStandings,
   AdminTeam,
   MatchStatus,
   Squad,
@@ -41,6 +42,18 @@ export async function listCompetitions() {
   );
 }
 
+export async function getCompetition(
+  slug: string,
+): Promise<AdminCompetition | null> {
+  const { token } = await getAuth();
+  const result = await apiRequest<AdminCompetition>(
+    `/admin/competitions/${encodeURIComponent(slug)}`,
+    { token },
+  );
+  if (!result.ok && result.status === 404) return null;
+  return unwrap(result);
+}
+
 export async function listTeams(squad?: Squad) {
   const { token } = await getAuth();
   const query = squad ? `?squad=${squad}` : "";
@@ -52,4 +65,16 @@ export async function listTeams(squad?: Squad) {
 export async function getTeam(slug: string): Promise<AdminTeam | null> {
   const teams = await listTeams();
   return teams.find((team) => team.slug === slug) ?? null;
+}
+
+// The table is public, so this needs no sign-in. It is calculated by the API
+// from the final results.
+export async function getStandings(
+  competitionSlug: string,
+): Promise<AdminStandings | null> {
+  const result = await apiRequest<AdminStandings>(
+    `/competitions/${encodeURIComponent(competitionSlug)}/standings`,
+  );
+  if (!result.ok && result.status === 404) return null;
+  return unwrap(result);
 }

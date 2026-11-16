@@ -47,3 +47,22 @@ export type AdminMatch = {
   home: { slug: string; name: string };
   away: { slug: string; name: string };
 };
+
+export type AdminStandingRow = {
+  position: number;
+  team: { slug: string; name: string; isOurs: boolean };
+  played: number;
+  won: number;
+  drawn: number;
+  lost: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  goalDifference: number;
+  adjustment: number;
+  points: number;
+};
+
+export type AdminStandings = {
+  competition: { slug: string; name: string; season: string };
+  rows: AdminStandingRow[];
+};

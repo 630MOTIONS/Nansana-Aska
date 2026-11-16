@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { connection } from "next/server";
 import { StatusBadge, controlClass } from "@/components/admin/ui";
 import Button from "@/components/ui/Button";
 import { getAuth } from "@/lib/admin/auth";
@@ -37,6 +38,10 @@ export default async function MatchesPage(props: {
   const status = statuses.find((item) => item === statusParam);
 
   const matches = await listMatches({ competition, status, limit: 200 });
+
+  // The clock changes between renders, so Next.js needs to know this page is
+  // rendered per request before it is read.
+  await connection();
   const now = Date.now();
 
   return (
@@ -163,7 +168,3 @@ export default async function MatchesPage(props: {
     </div>
   );
 }
-
-// Admin routes resolve the signed-in user before rendering, so they
-// are allowed to block instead of showing an instant static shell.
-export const instant = false;

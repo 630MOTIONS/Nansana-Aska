@@ -18,9 +18,12 @@ export function fromKampalaInput(value: string): string | null {
   return `${match[1]}T${match[2]}:00+03:00`;
 }
 
+const base = { timeZone: "Africa/Kampala" } as const;
+
+// "Sat, 7 Nov 2026, 19:30 EAT"
 export function formatKampala(iso: string): string {
   const text = new Intl.DateTimeFormat("en-GB", {
-    timeZone: "Africa/Kampala",
+    ...base,
     weekday: "short",
     day: "numeric",
     month: "short",
@@ -30,4 +33,45 @@ export function formatKampala(iso: string): string {
     hour12: false,
   }).format(new Date(iso));
   return `${text} EAT`;
+}
+
+// "Saturday, 7 November 2026"
+export function formatKampalaLongDate(iso: string): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    ...base,
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(iso));
+}
+
+// "7 Nov 2026"
+export function formatKampalaDate(iso: string): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    ...base,
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(iso));
+}
+
+// "Sat, 7 Nov"
+export function formatKampalaDay(iso: string): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    ...base,
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  }).format(new Date(iso));
+}
+
+// "19:30"
+export function formatKampalaTime(iso: string): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    ...base,
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(new Date(iso));
 }

@@ -1,38 +1,78 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import ResultForm from "@/components/admin/ResultForm";
-import { StatusBadge } from "@/components/admin/ui";
+import { connection } from "next/server";
+import NeedsResultPanel from "@/components/admin/dashboard/NeedsResultPanel";
+import NextMatchHero from "@/components/admin/dashboard/NextMatchHero";
+import RecentResults from "@/components/admin/dashboard/RecentResults";
+import RecentResultsList from "@/components/admin/dashboard/RecentResultsList";
+import StandingsPanel from "@/components/admin/dashboard/StandingsPanel";
+import UpcomingPanel from "@/components/admin/dashboard/UpcomingPanel";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import { getAuth } from "@/lib/admin/auth";
-import { listMatches } from "@/lib/admin/data";
-import { formatKampala } from "@/lib/admin/time";
+import { getStandings, listCompetitions, listMatches, listTeams } from "@/lib/admin/data";
+import { outcomeFor, pickCompetition } from "@/lib/admin/dashboard";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
-export default async function DashboardPage() {
+export default async function DashboardPage(props: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const { user } = await getAuth();
-  const matches = await listMatches({ limit: 200 });
+  const query = await props.searchParams;
+  const requested = Array.isArray(query.competition)
+    ? query.competition[0]
+    : query.competition;
 
-  // Read after the data above, which is what lets this page use the clock.
+  const [matches, teams, competitions] = await Promise.all([
+    listMatches({ limit: 200 }),
+    listTeams(),
+    listCompetitions(),
+  ]);
+
+  const selected = pickCompetition(competitions, requested);
+  const standings = selected ? await getStandings(selected.slug) : null;
+
+  // The clock changes between renders, so Next.js needs to know this page is
+  // rendered per request before it is read. connection() says exactly that.
+  await connection();
   const now = Date.now();
-  const kickoff = (iso: string) => new Date(iso).getTime();
+  const at = (iso: string) => new Date(iso).getTime();
+
+  const logos: Record<string, string | null> = {};
+  const oursSlugs = new Set<string>();
+  for (const team of teams) {
+    logos[team.slug] = team.logoUrl;
+    if (team.isOurs) oursSlugs.add(team.slug);
+  }
+  const isOurs = (slug: string) => oursSlugs.has(slug);
+  const involvesUs = (match: (typeof matches)[number]) =>
+    isOurs(match.home.slug) || isOurs(match.away.slug);
 
   const needsResult = matches
     .filter(
       (match) =>
         (match.status === "scheduled" || match.status === "live") &&
-        kickoff(match.kickoffAt) < now,
+        at(match.kickoffAt) < now,
     )
-    .sort((a, b) => kickoff(a.kickoffAt) - kickoff(b.kickoffAt));
+    .sort((a, b) => at(a.kickoffAt) - at(b.kickoffAt));
 
   const upcoming = matches
-    .filter((match) => match.status === "scheduled" && kickoff(match.kickoffAt) >= now)
-    .sort((a, b) => kickoff(a.kickoffAt) - kickoff(b.kickoffAt))
-    .slice(0, 5);
+    .filter(
+      (match) =>
+        match.status === "scheduled" && at(match.kickoffAt) >= now && involvesUs(match),
+    )
+    .sort((a, b) => at(a.kickoffAt) - at(b.kickoffAt));
+
+  const recent = matches
+    .filter((match) => match.status === "final" && involvesUs(match))
+    .sort((a, b) => at(b.kickoffAt) - at(a.kickoffAt))
+    .slice(0, 6)
+    .map((match) => ({ match, outcome: outcomeFor(match, isOurs)?.outcome ?? null }));
+
+  const next = upcoming[0];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-section text-navy">
@@ -45,92 +85,50 @@ export default async function DashboardPage() {
         <Button href="/admin/matches/new">New match</Button>
       </div>
 
-      <Card as="section" className="p-6">
-        <h2 className="text-card text-navy">Needs a result</h2>
-        {needsResult.length === 0 ? (
-          <p className="mt-3 text-ink-muted">
-            Nothing waiting. Every match that has kicked off has a result.
+      {next ? (
+        <NextMatchHero
+          match={next}
+          home={{
+            name: next.home.name,
+            logoUrl: logos[next.home.slug] ?? null,
+            ours: isOurs(next.home.slug),
+          }}
+          away={{
+            name: next.away.name,
+            logoUrl: logos[next.away.slug] ?? null,
+            ours: isOurs(next.away.slug),
+          }}
+        />
+      ) : (
+        <Card as="section" className="p-8 text-center">
+          <h2 className="text-card text-navy">No upcoming match</h2>
+          <p className="mx-auto mt-2 max-w-md text-ink-muted">
+            When a future match involving one of your teams is scheduled, it
+            appears here with a countdown. Teams need “This is a Nansana ASKA
+            team” ticked.
           </p>
-        ) : (
-          <ul className="mt-4 divide-y divide-surface-strong">
-            {needsResult.map((match) => (
-              <li
-                key={match.slug}
-                className="flex flex-col gap-3 py-4 lg:flex-row lg:items-center lg:justify-between"
-              >
-                <div>
-                  <p className="font-semibold text-navy">
-                    <Link
-                      href={`/admin/matches/${match.slug}`}
-                      className="hover:text-brand-blue"
-                    >
-                      {match.home.name} vs {match.away.name}
-                    </Link>
-                  </p>
-                  <p className="text-sm text-ink-muted">
-                    {match.competition.name} · {match.stage} ·{" "}
-                    {formatKampala(match.kickoffAt)}
-                  </p>
-                  <div className="mt-1">
-                    <StatusBadge status={match.status} needsResult />
-                  </div>
-                </div>
-                <ResultForm
-                  slug={match.slug}
-                  homeName={match.home.name}
-                  awayName={match.away.name}
-                  homeScore={match.homeScore}
-                  awayScore={match.awayScore}
-                  status={match.status}
-                />
-              </li>
-            ))}
-          </ul>
-        )}
-      </Card>
+          <div className="mt-4">
+            <Button href="/admin/matches/new">New match</Button>
+          </div>
+        </Card>
+      )}
 
-      <Card as="section" className="p-6">
-        <div className="flex items-center justify-between gap-4">
-          <h2 className="text-card text-navy">Upcoming matches</h2>
-          <Link
-            href="/admin/matches"
-            className="text-label font-bold uppercase tracking-wide text-navy hover:text-brand-blue"
-          >
-            All matches →
-          </Link>
+      <NeedsResultPanel matches={needsResult} logos={logos} />
+
+      <RecentResults results={recent.slice(0, 5)} logos={logos} />
+
+      <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-[1.5fr_1fr_1fr]">
+        <div className="lg:col-span-2 xl:col-span-1">
+          <StandingsPanel
+            standings={standings}
+            competitions={competitions}
+            selected={selected?.slug}
+            logos={logos}
+          />
         </div>
-        {upcoming.length === 0 ? (
-          <p className="mt-3 text-ink-muted">No upcoming matches yet.</p>
-        ) : (
-          <ul className="mt-4 divide-y divide-surface-strong">
-            {upcoming.map((match) => (
-              <li
-                key={match.slug}
-                className="flex flex-wrap items-center justify-between gap-2 py-3"
-              >
-                <div>
-                  <p className="font-semibold text-navy">
-                    {match.home.name} vs {match.away.name}
-                  </p>
-                  <p className="text-sm text-ink-muted">
-                    {match.competition.name} · {formatKampala(match.kickoffAt)}
-                  </p>
-                </div>
-                <Link
-                  href={`/admin/matches/${match.slug}`}
-                  className="text-label font-bold uppercase tracking-wide text-navy hover:text-brand-blue"
-                >
-                  Edit
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Card>
+        <RecentResultsList results={recent} logos={logos} />
+        <UpcomingPanel matches={upcoming.slice(0, 6)} logos={logos} />
+      </div>
     </div>
   );
 }
-
-// Admin routes resolve the signed-in user before rendering, so they
-// are allowed to block instead of showing an instant static shell.
-export const instant = false;
