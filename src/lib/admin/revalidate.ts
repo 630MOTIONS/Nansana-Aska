@@ -9,3 +9,9 @@ export function refreshAfterChange() {
   revalidatePath("/admin", "layout");
   updateTag("matches");
 }
+
+// The same for news articles.
+export function refreshNewsAfterChange() {
+  revalidatePath("/admin", "layout");
+  updateTag("news");
+}
