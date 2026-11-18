@@ -24,6 +24,12 @@ export const metadata: Metadata = {
   },
   description:
     "Official website of Nansana ASKA Futsal Club, competing in the Uganda Futsal Super League.",
+  // The site is kept out of search engines until ALLOW_INDEXING=1 is set,
+  // which should only happen at the real launch.
+  robots:
+    process.env.ALLOW_INDEXING === "1"
+      ? undefined
+      : { index: false, follow: false },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
