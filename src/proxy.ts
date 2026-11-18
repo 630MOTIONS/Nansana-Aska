@@ -6,6 +6,11 @@ import { ADMIN_COOKIE } from "@/lib/admin/constants";
 // reach admin pages. It does NOT prove the session is valid. Every admin page
 // and action verifies the session with the API through getAuth().
 export function proxy(request: NextRequest) {
+  // Switched on for preview deployments that have no API behind them.
+  if (process.env.ADMIN_DISABLED === "1") {
+    return new NextResponse("Not found", { status: 404 });
+  }
+
   const { pathname } = request.nextUrl;
 
   if (pathname !== "/admin/login" && !request.cookies.get(ADMIN_COOKIE)) {

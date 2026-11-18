@@ -3,6 +3,21 @@ import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import TopBar from "@/components/layout/TopBar";
 
+// Shown on preview deployments (PREVIEW_BANNER=1) so a reviewer does not take
+// the sample fixtures, scores and articles for real club information.
+function PreviewBanner() {
+  if (process.env.PREVIEW_BANNER !== "1") return null;
+  return (
+    <p
+      role="note"
+      className="bg-brand-gold px-4 py-2 text-center text-sm font-semibold text-ink"
+    >
+      Preview for review. Fixtures, scores, squads, news and contact details on
+      this site are sample content and not final.
+    </p>
+  );
+}
+
 export default function SiteLayout({ children }: { children: ReactNode }) {
   return (
     <>
@@ -12,6 +27,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
       >
         Skip to content
       </a>
+      <PreviewBanner />
       <TopBar />
       <Header />
       <div className="flex-1">{children}</div>
