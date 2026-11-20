@@ -3,6 +3,7 @@ import Link from "next/link";
 import Card from "@/components/ui/Card";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
 import type { Article, TagTone } from "@/lib/articles";
+import { isRemoteImage } from "@/lib/public/media";
 
 export const tagClasses: Record<TagTone, string> = {
   navy: "bg-navy text-white",
@@ -21,10 +22,7 @@ export default function ArticleCard({ article }: { article: Article }) {
   const { visual } = article;
 
   return (
-    <Card
-      as="article"
-      className="group relative flex h-full flex-col focus-within:ring-4 focus-within:ring-brand-orange"
-    >
+    <Card as="article" className="group relative flex h-full flex-col focus-within:ring-4 focus-within:ring-brand-orange">
       <div className="relative">
         {visual.type === "text" ? (
           <div
@@ -45,6 +43,7 @@ export default function ArticleCard({ article }: { article: Article }) {
               src={article.image}
               alt=""
               fill
+              unoptimized={isRemoteImage(article.image)}
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
               className="object-cover transition-transform duration-300 group-hover:scale-105"
             />

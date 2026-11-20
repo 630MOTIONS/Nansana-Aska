@@ -5,9 +5,10 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
 import SectionHeading from "@/components/ui/SectionHeading";
-import { featuredArticle as story } from "@/lib/articles";
+import type { Article } from "@/lib/articles";
+import { isRemoteImage } from "@/lib/public/media";
 
-export default function FeaturedStory() {
+export default function FeaturedStory({ story }: { story: Article }) {
   return (
     <section aria-label="Featured story" className="bg-surface py-16">
       <div className="mx-auto w-full max-w-site px-4">
@@ -29,6 +30,7 @@ export default function FeaturedStory() {
                 src={story.image}
                 alt=""
                 fill
+                unoptimized={isRemoteImage(story.image)}
                 sizes="(min-width: 1024px) 60vw, 100vw"
                 className="object-cover"
               />
@@ -58,7 +60,7 @@ export default function FeaturedStory() {
               icon={<ArrowRight size={14} aria-hidden />}
               className="mt-auto w-full"
             >
-              Read full match report
+              Read the full story
             </Button>
           </div>
         </Card>

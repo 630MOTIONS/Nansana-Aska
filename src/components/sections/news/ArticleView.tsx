@@ -1,24 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  ArrowRight,
-  CalendarDays,
-  Clock,
-  PenLine,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarDays, Clock, PenLine } from "lucide-react";
+import ArticleBody from "@/components/news/ArticleBody";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
-import { articleCategories } from "@/lib/articles";
-import type { Article } from "@/lib/articles";
+import { isRemoteImage } from "@/lib/public/media";
+import { publicCategories } from "@/lib/public/news-meta";
+import type { PublicArticle } from "@/lib/public/news-meta";
 import ArticleCard from "./ArticleCard";
 
 type ArticleViewProps = {
-  article: Article;
-  previous?: Article;
-  next?: Article;
-  related: Article[];
+  article: PublicArticle;
+  previous?: PublicArticle;
+  next?: PublicArticle;
+  related: PublicArticle[];
 };
 
 export default function ArticleView({
@@ -27,10 +23,10 @@ export default function ArticleView({
   next,
   related,
 }: ArticleViewProps) {
-  const categoryLabel = articleCategories.find(
-    (c) => c.id === article.category,
+  const categoryLabel = publicCategories.find(
+    (item) => item.id === article.category,
   )?.label;
-  const hasBody = article.body && article.body.length > 0;
+  const hasBlocks = article.body && article.body.length > 0;
 
   return (
     <main id="main" className="bg-white pb-16 pt-8">
@@ -83,6 +79,7 @@ export default function ArticleView({
               src={article.image}
               alt=""
               fill
+              unoptimized={isRemoteImage(article.image)}
               sizes="(min-width: 768px) 768px, 100vw"
               className="object-cover"
               priority
@@ -92,33 +89,37 @@ export default function ArticleView({
           )}
         </div>
 
-        <div className="mt-10 space-y-5 text-ink">
-          {hasBody ? (
-            article.body!.map((block, index) => {
-              if (block.type === "heading") {
-                return (
-                  <h2 key={index} className="pt-4 text-section text-navy">
-                    {block.text}
-                  </h2>
-                );
-              }
-              if (block.type === "quote") {
-                return (
-                  <blockquote
-                    key={index}
-                    className="rounded-r-lg border-l-4 border-brand-orange bg-surface-tint p-6"
-                  >
-                    <p className="font-display text-card font-bold uppercase italic text-navy">
-                      “{block.text}”
-                    </p>
-                    <footer className="mt-3 text-label font-bold uppercase tracking-widest text-gold-deep">
-                      — {block.attribution}
-                    </footer>
-                  </blockquote>
-                );
-              }
-              return <p key={index}>{block.text}</p>;
-            })
+        <div className="mt-10">
+          {article.markdown ? (
+            <ArticleBody markdown={article.markdown} />
+          ) : hasBlocks ? (
+            <div className="space-y-5 text-ink">
+              {article.body!.map((block, index) => {
+                if (block.type === "heading") {
+                  return (
+                    <h2 key={index} className="pt-4 text-section text-navy">
+                      {block.text}
+                    </h2>
+                  );
+                }
+                if (block.type === "quote") {
+                  return (
+                    <blockquote
+                      key={index}
+                      className="rounded-r-lg border-l-4 border-brand-orange bg-surface-tint p-6"
+                    >
+                      <p className="font-display text-card font-bold uppercase italic text-navy">
+                        “{block.text}”
+                      </p>
+                      <footer className="mt-3 text-label font-bold uppercase tracking-widest text-gold-deep">
+                        — {block.attribution}
+                      </footer>
+                    </blockquote>
+                  );
+                }
+                return <p key={index}>{block.text}</p>;
+              })}
+            </div>
           ) : (
             <p className="rounded-lg bg-surface-tint p-6 text-ink-muted">
               The full article will appear here once the club has approved it.

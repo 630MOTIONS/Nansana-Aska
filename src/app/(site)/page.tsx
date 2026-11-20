@@ -6,15 +6,18 @@ import News from "@/components/sections/News";
 import Partners from "@/components/sections/Partners";
 import Squads from "@/components/sections/Squads";
 import StatsStrip from "@/components/sections/StatsStrip";
+import { getPublishedArticles } from "@/lib/public/news";
 
-export default function Home() {
+export default async function Home() {
+  const articles = await getPublishedArticles();
+
   return (
     <main id="main">
       <Hero />
       <StatsStrip />
       <MatchCentre />
       <Squads />
-      <News />
+      <News articles={articles.slice(0, 3)} />
       <GalleryHighlights />
       <Partners />
       <JoinCta />

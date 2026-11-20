@@ -2,41 +2,38 @@
 
 import { useState } from "react";
 import { Search } from "lucide-react";
-import { articleCategories, articles } from "@/lib/articles";
-import type { ArticleCategory } from "@/lib/articles";
+import type { Article } from "@/lib/articles";
+import { publicCategories } from "@/lib/public/news-meta";
 import ArticleCard from "./ArticleCard";
 
-type CategoryFilter = ArticleCategory | "all";
+type CategoryFilter = Article["category"] | "all";
 
 const PAGE_SIZE = 6;
 
-// The featured story has its own section above, so it is not repeated here.
-const feed = articles.filter((a) => !a.featured);
-
 const tabs: { id: CategoryFilter; label: string }[] = [
   { id: "all", label: "All news" },
-  ...articleCategories.map((c) => ({ id: c.id, label: c.label })),
+  ...publicCategories,
 ];
 
-function countFor(id: CategoryFilter) {
-  return id === "all"
-    ? feed.length
-    : feed.filter((a) => a.category === id).length;
-}
-
-export default function NewsFeed() {
+// `articles` arrive newest first.
+export default function NewsFeed({ articles }: { articles: Article[] }) {
   const [category, setCategory] = useState<CategoryFilter>("all");
   const [query, setQuery] = useState("");
   const [newestFirst, setNewestFirst] = useState(true);
   const [shown, setShown] = useState(PAGE_SIZE);
 
+  const countFor = (id: CategoryFilter) =>
+    id === "all"
+      ? articles.length
+      : articles.filter((article) => article.category === id).length;
+
   const needle = query.trim().toLowerCase();
-  const filtered = feed.filter(
-    (a) =>
-      (category === "all" || a.category === category) &&
+  const filtered = articles.filter(
+    (article) =>
+      (category === "all" || article.category === category) &&
       (needle === "" ||
-        a.title.toLowerCase().includes(needle) ||
-        a.excerpt.toLowerCase().includes(needle)),
+        article.title.toLowerCase().includes(needle) ||
+        article.excerpt.toLowerCase().includes(needle)),
   );
   const sorted = newestFirst ? filtered : [...filtered].reverse();
   const visible = sorted.slice(0, shown);
@@ -103,9 +100,7 @@ export default function NewsFeed() {
               <select
                 id="news-sort"
                 value={newestFirst ? "newest" : "oldest"}
-                onChange={(event) =>
-                  setNewestFirst(event.target.value === "newest")
-                }
+                onChange={(event) => setNewestFirst(event.target.value === "newest")}
                 className="rounded-md bg-white px-3 py-2 text-label font-bold uppercase tracking-wide text-navy"
               >
                 <option value="newest">Newest first</option>
