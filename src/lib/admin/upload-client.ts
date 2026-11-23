@@ -5,7 +5,8 @@ const TYPES = ["image/png", "image/jpeg", "image/webp"];
 
 export type UploadTarget =
   | { purpose: "inline" }
-  | { purpose: "cover"; slug: string };
+  | { purpose: "cover"; slug: string }
+  | { purpose: "gallery"; category: string };
 
 export async function uploadImage(
   file: File,
@@ -22,6 +23,7 @@ export async function uploadImage(
   form.append("file", file);
   form.append("purpose", target.purpose);
   if (target.purpose === "cover") form.append("slug", target.slug);
+  if (target.purpose === "gallery") form.append("category", target.category);
 
   try {
     const response = await fetch("/admin/api/upload", {

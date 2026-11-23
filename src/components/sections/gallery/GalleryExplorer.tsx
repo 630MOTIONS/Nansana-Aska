@@ -3,33 +3,36 @@
 import { useState } from "react";
 import { RefreshCw, SlidersHorizontal } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
-import { galleryCategories, galleryItems } from "@/lib/gallery";
-import type { GalleryCategory } from "@/lib/gallery";
+import { publicGalleryCategories } from "@/lib/public/gallery-meta";
+import type {
+  GalleryCategoryId,
+  PublicPhoto,
+} from "@/lib/public/gallery-meta";
 import GalleryCard from "./GalleryCard";
 import Lightbox from "./Lightbox";
 
-type CategoryFilter = GalleryCategory | "all";
+type CategoryFilter = GalleryCategoryId | "all";
 
 const PAGE_SIZE = 8;
 
 const tabs: { id: CategoryFilter; label: string }[] = [
   { id: "all", label: "All photos" },
-  ...galleryCategories.map((c) => ({ id: c.id, label: c.label })),
+  ...publicGalleryCategories.map((c) => ({ id: c.id, label: c.label })),
 ];
 
-function countFor(id: CategoryFilter) {
-  return id === "all"
-    ? galleryItems.length
-    : galleryItems.filter((item) => item.category === id).length;
-}
-
-export default function GalleryExplorer() {
+// `items` arrive newest first.
+export default function GalleryExplorer({ items }: { items: PublicPhoto[] }) {
   const [category, setCategory] = useState<CategoryFilter>("all");
   const [newestFirst, setNewestFirst] = useState(true);
   const [shown, setShown] = useState(PAGE_SIZE);
   const [openId, setOpenId] = useState<string | null>(null);
 
-  const filtered = galleryItems.filter(
+  const countFor = (id: CategoryFilter) =>
+    id === "all"
+      ? items.length
+      : items.filter((item) => item.category === id).length;
+
+  const filtered = items.filter(
     (item) => category === "all" || item.category === category,
   );
   const sorted = newestFirst ? filtered : [...filtered].reverse();
@@ -49,11 +52,7 @@ export default function GalleryExplorer() {
   }
 
   return (
-    <section
-      id="archive"
-      aria-label="Explore our gallery"
-      className="scroll-mt-8"
-    >
+    <section id="archive" aria-label="Explore our gallery" className="scroll-mt-8">
       <div className="bg-surface-tint py-12">
         <div className="mx-auto w-full max-w-site px-4">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -69,9 +68,8 @@ export default function GalleryExplorer() {
                 className="font-semibold uppercase tracking-wide text-ink-muted"
                 aria-live="polite"
               >
-                Showing{" "}
-                <span className="text-brand-blue">{visible.length}</span> of{" "}
-                {sorted.length} photos
+                Showing <span className="text-brand-blue">{visible.length}</span>{" "}
+                of {sorted.length} photos
               </p>
               <button
                 type="button"
@@ -146,11 +144,7 @@ export default function GalleryExplorer() {
                 onClick={() => setShown((n) => n + PAGE_SIZE)}
                 className="inline-flex items-center gap-3 rounded-md bg-white px-6 py-3 text-button font-bold uppercase tracking-wide text-navy shadow-card transition-colors hover:bg-surface-tint"
               >
-                <RefreshCw
-                  size={16}
-                  className="text-brand-orange"
-                  aria-hidden
-                />
+                <RefreshCw size={16} className="text-brand-orange" aria-hidden />
                 Load {Math.min(PAGE_SIZE, remaining)} more moments
                 <span className="rounded-full bg-surface-strong px-2 py-0.5 text-label">
                   Archive {currentPage}/{totalPages}

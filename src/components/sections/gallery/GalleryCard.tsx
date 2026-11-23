@@ -1,16 +1,17 @@
 import Image from "next/image";
 import { ZoomIn } from "lucide-react";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
-import { galleryCategories } from "@/lib/gallery";
-import type { GalleryItem } from "@/lib/gallery";
+import { isRemoteImage } from "@/lib/public/media";
+import { publicGalleryCategories } from "@/lib/public/gallery-meta";
+import type { PublicPhoto } from "@/lib/public/gallery-meta";
 
 type GalleryCardProps = {
-  item: GalleryItem;
+  item: PublicPhoto;
   onOpen: () => void;
 };
 
 export default function GalleryCard({ item, onOpen }: GalleryCardProps) {
-  const category = galleryCategories.find((c) => c.id === item.category);
+  const category = publicGalleryCategories.find((c) => c.id === item.category);
 
   return (
     <article
@@ -23,6 +24,7 @@ export default function GalleryCard({ item, onOpen }: GalleryCardProps) {
           src={item.photo}
           alt=""
           fill
+          unoptimized={isRemoteImage(item.photo)}
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
           className="object-cover transition-transform duration-300 group-hover:scale-105"
         />
@@ -59,9 +61,11 @@ export default function GalleryCard({ item, onOpen }: GalleryCardProps) {
             {item.title}
           </button>
         </h3>
-        <p className="mt-1 line-clamp-2 text-sm text-white/80">
-          {item.caption}
-        </p>
+        {item.caption && (
+          <p className="mt-1 line-clamp-2 text-sm text-white/80">
+            {item.caption}
+          </p>
+        )}
         <span
           className="mt-3 inline-flex items-center gap-1.5 text-label font-bold uppercase tracking-wide text-brand-orange"
           aria-hidden="true"

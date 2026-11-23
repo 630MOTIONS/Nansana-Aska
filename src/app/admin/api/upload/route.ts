@@ -85,5 +85,23 @@ export async function POST(request: Request) {
     return reply({ ok: true });
   }
 
+  if (purpose === "gallery") {
+    const category = form.get("category");
+    if (typeof category !== "string" || !/^[a-z_]+$/.test(category)) {
+      return reply({ error: "Choose a category." }, 400);
+    }
+    outgoing.append("category", category);
+    // The page refreshes once, after the whole batch. See GalleryUploader.
+    const result = await apiRequest<{ id: string }>("/admin/gallery", {
+      method: "POST",
+      token,
+      form: outgoing,
+    });
+    if (!result.ok) {
+      return reply({ error: result.message }, result.status || 502);
+    }
+    return reply({ ok: true, id: result.data.id });
+  }
+
   return reply({ error: "Unknown upload type." }, 400);
 }

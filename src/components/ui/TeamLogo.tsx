@@ -28,7 +28,8 @@ function initialsOf(name: string) {
 }
 
 // Shown next to the team's name, so the image itself is decorative. Logos sit
-// on a white chip because the files have white backgrounds.
+// on a white chip because the files have white backgrounds. Logos stored in the
+// API are loaded as they are (they are small), local files are optimised.
 export default function TeamLogo({
   name,
   initials,
@@ -57,10 +58,14 @@ export default function TeamLogo({
           alt=""
           width={px}
           height={px}
+          unoptimized={/^https?:\/\//.test(src)}
           className="h-full w-full object-contain"
         />
       ) : (
-        <span className={`font-bold text-ink-muted ${text}`} aria-hidden="true">
+        <span
+          className={`font-bold text-ink-muted ${text}`}
+          aria-hidden="true"
+        >
           {initials ?? initialsOf(name)}
         </span>
       )}

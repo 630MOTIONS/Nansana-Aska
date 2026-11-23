@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   CalendarDays,
+  Images,
   LayoutDashboard,
   Newspaper,
   Shield,
@@ -14,6 +15,7 @@ const items = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/matches", label: "Matches", icon: CalendarDays, exact: false },
   { href: "/admin/news", label: "News", icon: Newspaper, exact: false },
+  { href: "/admin/gallery", label: "Gallery", icon: Images, exact: false },
   { href: "/admin/teams", label: "Teams", icon: Shield, exact: false },
   { href: "/admin/competitions", label: "Competitions", icon: Trophy, exact: false },
 ];

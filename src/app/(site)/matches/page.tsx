@@ -4,6 +4,7 @@ import MatchesExplore from "@/components/sections/matches/MatchesExplore";
 import MatchesExplorer from "@/components/sections/matches/MatchesExplorer";
 import MatchesHero from "@/components/sections/matches/MatchesHero";
 import Standings from "@/components/sections/matches/Standings";
+import { getStandings } from "@/lib/public/standings";
 
 export const metadata: Metadata = {
   title: "Matches",
@@ -11,12 +12,14 @@ export const metadata: Metadata = {
     "Fixtures, results and standings for Nansana ASKA Futsal Club in the Uganda Futsal Super League.",
 };
 
-export default function MatchesPage() {
+export default async function MatchesPage() {
+  const standings = await getStandings();
+
   return (
     <main id="main">
       <MatchesHero />
       <MatchesExplorer />
-      <Standings />
+      <Standings data={standings} />
       <MatchesExplore />
       <MatchesCta />
     </main>
