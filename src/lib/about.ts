@@ -22,7 +22,7 @@ import type { Tone } from "@/components/ui/Tile";
 export const aboutStats = [
   { value: "2021", label: "Founded", valueClass: "text-navy" },
   { value: "FAU", label: "Affiliated", valueClass: "text-gold-deep" },
-  { value: "2", label: "Divisions", valueClass: "text-brand-orange" },
+  { value: "1", label: "Divisions", valueClass: "text-brand-orange" },
 ];
 
 export const identityPoints: {

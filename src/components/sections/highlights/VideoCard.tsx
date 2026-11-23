@@ -1,18 +1,20 @@
 import Image from "next/image";
 import { ArrowRight, Play } from "lucide-react";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
-import { videoCategories } from "@/lib/highlights";
-import type { Video } from "@/lib/highlights";
+import { isRemoteImage } from "@/lib/public/media";
+import { publicVideoCategories } from "@/lib/public/highlights-meta";
+import type { PublicVideo } from "@/lib/public/highlights-meta";
+import VideoPlayer from "./VideoPlayer";
 
 type VideoCardProps = {
-  video: Video;
+  video: PublicVideo;
   compact?: boolean; // hides the date and call to action
 };
 
 export default function VideoCard({ video, compact = false }: VideoCardProps) {
-  const category = videoCategories.find((c) => c.id === video.category);
+  const category = publicVideoCategories.find((c) => c.id === video.category);
   const badgeLabel = video.badge ?? category?.label;
-  const playable = Boolean(video.videoUrl);
+  const playable = Boolean(video.url);
 
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-card focus-within:ring-4 focus-within:ring-brand-orange">
@@ -22,6 +24,7 @@ export default function VideoCard({ video, compact = false }: VideoCardProps) {
             src={video.poster}
             alt=""
             fill
+            unoptimized={isRemoteImage(video.poster)}
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
@@ -52,37 +55,36 @@ export default function VideoCard({ video, compact = false }: VideoCardProps) {
           </span>
         )}
 
-        <span className="absolute bottom-3 right-3 rounded-sm bg-navy-deep/90 px-2 py-0.5 font-mono text-label font-bold text-white">
-          {video.duration}
-        </span>
+        {video.duration && (
+          <span className="absolute bottom-3 right-3 rounded-sm bg-navy-deep/90 px-2 py-0.5 font-mono text-label font-bold text-white">
+            {video.duration}
+          </span>
+        )}
       </div>
 
       <div className="flex grow flex-col gap-2 p-5">
         <div className="flex items-center justify-between gap-2 text-label font-semibold uppercase tracking-wide">
-          <p className="text-gold-deep">{video.kicker}</p>
+          <p className="truncate text-gold-deep">{video.kicker ?? ""}</p>
           {!compact && video.date && (
-            <p className="text-ink-muted">{video.date}</p>
+            <p className="shrink-0 text-ink-muted">{video.date}</p>
           )}
         </div>
 
         <h3 className="line-clamp-2 text-card text-navy">
           {playable ? (
-            <a
-              href={video.videoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="after:absolute after:inset-0 after:content-['']"
+            <VideoPlayer
+              video={video}
+              className="text-left uppercase after:absolute after:inset-0 after:content-['']"
             >
               {video.title}
-              <span className="sr-only"> (opens in a new tab)</span>
-            </a>
+            </VideoPlayer>
           ) : (
             video.title
           )}
         </h3>
-        <p className="line-clamp-2 text-sm text-ink-muted">
-          {video.description}
-        </p>
+        {video.description && (
+          <p className="line-clamp-2 text-sm text-ink-muted">{video.description}</p>
+        )}
 
         {!compact && (
           <p className="mt-auto inline-flex items-center gap-1.5 pt-3 text-label font-bold uppercase tracking-wide text-gold-deep">

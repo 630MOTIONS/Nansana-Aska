@@ -1,10 +1,10 @@
+import Link from "next/link";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
-import { articles, featuredArticle } from "@/lib/articles";
-import Link from "next/link";
+import type { Article } from "@/lib/articles";
 
 const ticker = [
   "Official club news",
@@ -13,9 +13,13 @@ const ticker = [
   "Wakiso District futsal media",
 ];
 
-export default function NewsHero() {
-  const latest = articles.find((a) => !a.featured) ?? featuredArticle;
-
+export default function NewsHero({
+  latest,
+  featured,
+}: {
+  latest?: Article;
+  featured?: Article;
+}) {
   return (
     <section className="bg-white pt-10">
       <div className="mx-auto grid w-full max-w-site items-center gap-10 px-4 pb-12 lg:grid-cols-[1.2fr_1fr]">
@@ -35,14 +39,16 @@ export default function NewsHero() {
             <Button href="#feed" icon={<ArrowDown size={14} aria-hidden />}>
               Read latest stories
             </Button>
-            <Button
-              href={`/news/${featuredArticle.slug}`}
-              variant="light"
-              icon={<ArrowRight size={14} aria-hidden />}
-              className="border border-surface-strong"
-            >
-              Featured match report
-            </Button>
+            {featured && (
+              <Button
+                href={`/news/${featured.slug}`}
+                variant="light"
+                icon={<ArrowRight size={14} aria-hidden />}
+                className="border border-surface-strong"
+              >
+                Featured story
+              </Button>
+            )}
           </div>
         </div>
 
@@ -51,21 +57,23 @@ export default function NewsHero() {
           <Badge variant="onDark" className="absolute right-3 top-3">
             Matchday action
           </Badge>
-          <Card className="absolute inset-x-4 bottom-4 p-4">
-            <p className="text-label font-bold uppercase tracking-widest text-gold-deep">
-              Latest story • {latest.tag}
-            </p>
-            <h2 className="mt-1 line-clamp-2 text-card text-navy">
-              {latest.title}
-            </h2>
-            <p className="mt-1 text-label text-ink-muted">{latest.date}</p>
-            <Link
-              href={`/news/${latest.slug}`}
-              className="mt-2 inline-flex items-center gap-1.5 text-label font-bold uppercase tracking-wide text-navy hover:text-brand-blue"
-            >
-              Read story <ArrowRight size={12} aria-hidden />
-            </Link>
-          </Card>
+          {latest && (
+            <Card className="absolute inset-x-4 bottom-4 p-4">
+              <p className="text-label font-bold uppercase tracking-widest text-gold-deep">
+                Latest story • {latest.tag}
+              </p>
+              <h2 className="mt-1 line-clamp-2 text-card text-navy">
+                {latest.title}
+              </h2>
+              <p className="mt-1 text-label text-ink-muted">{latest.date}</p>
+              <Link
+                href={`/news/${latest.slug}`}
+                className="mt-2 inline-flex items-center gap-1.5 text-label font-bold uppercase tracking-wide text-navy hover:text-brand-blue"
+              >
+                Read story <ArrowRight size={12} aria-hidden />
+              </Link>
+            </Card>
+          )}
         </div>
       </div>
 

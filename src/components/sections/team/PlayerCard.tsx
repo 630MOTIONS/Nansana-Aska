@@ -2,8 +2,9 @@ import Image from "next/image";
 import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
-import { positionLabels } from "@/lib/team";
 import type { Player } from "@/lib/team";
+import { isRemoteImage } from "@/lib/public/media";
+import { positionLabels } from "@/lib/public/people-meta";
 
 const roleLabels = {
   captain: "Captain",
@@ -21,6 +22,7 @@ export default function PlayerCard({ player }: { player: Player }) {
             src={player.photo}
             alt={`${player.name}, ${positionLabel}`}
             fill
+            unoptimized={isRemoteImage(player.photo)}
             sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
             className="object-cover"
           />
@@ -41,9 +43,11 @@ export default function PlayerCard({ player }: { player: Player }) {
           </Badge>
         )}
 
-        <p className="absolute right-3 top-3 rounded-sm bg-navy px-2 py-1 font-display text-xl font-extrabold text-white">
-          <span className="sr-only">Number </span>#{player.number}
-        </p>
+        {player.number && (
+          <p className="absolute right-3 top-3 rounded-sm bg-navy px-2 py-1 font-display text-xl font-extrabold text-white">
+            <span className="sr-only">Number </span>#{player.number}
+          </p>
+        )}
 
         <div className="absolute inset-x-0 bottom-0 p-4">
           <p className="text-label font-bold uppercase tracking-widest text-gold-soft">

@@ -4,10 +4,11 @@ import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
-import type { GalleryItem } from "@/lib/gallery";
+import { isRemoteImage } from "@/lib/public/media";
+import type { PublicPhoto } from "@/lib/public/gallery-meta";
 
 type LightboxProps = {
-  item: GalleryItem | null;
+  item: PublicPhoto | null;
   position: string; // for example "3 / 8"
   onClose: () => void;
   onPrev?: () => void;
@@ -56,6 +57,7 @@ export default function Lightbox({
                 src={item.photo}
                 alt={item.title}
                 fill
+                unoptimized={isRemoteImage(item.photo)}
                 sizes="(min-width: 1024px) 1024px, 92vw"
                 className="object-contain"
               />
@@ -67,7 +69,9 @@ export default function Lightbox({
           <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-card">{item.title}</h2>
-              <p className="mt-1 text-sm text-white/80">{item.caption}</p>
+              {item.caption && (
+                <p className="mt-1 text-sm text-white/80">{item.caption}</p>
+              )}
             </div>
             <div className="flex shrink-0 items-center gap-2">
               <span className="mr-2 text-label font-semibold text-white/70">

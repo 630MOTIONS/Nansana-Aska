@@ -1,10 +1,14 @@
+import Image from "next/image";
 import { ArrowRight, Images } from "lucide-react";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
 import { aboutStats } from "@/lib/about";
+import { leagueLogos } from "@/lib/clubs";
 
 export default function AboutHero() {
+  const fau = leagueLogos.fau;
+
   return (
     <section className="bg-surface py-12 lg:py-16">
       <div className="mx-auto grid w-full max-w-site items-center gap-10 px-4 lg:grid-cols-2">
@@ -44,21 +48,40 @@ export default function AboutHero() {
           </div>
 
           <dl className="mt-10 flex gap-6">
-            {aboutStats.map((stat) => (
-              <div
-                key={stat.label}
-                className="flex flex-col-reverse border-l border-ink/15 pl-6 first:border-l-0 first:pl-0"
-              >
-                <dt className="text-label font-semibold uppercase tracking-wide text-ink-muted">
-                  {stat.label}
-                </dt>
-                <dd
-                  className={`font-display text-4xl font-extrabold leading-none ${stat.valueClass}`}
+            {aboutStats.map((stat) => {
+              const isFau = stat.value === "FAU";
+              const label =
+                stat.label === "Divisions" && stat.value === "1"
+                  ? "Division"
+                  : stat.label;
+              return (
+                <div
+                  key={stat.label}
+                  className="flex flex-col-reverse border-l border-ink/15 pl-6 first:border-l-0 first:pl-0"
                 >
-                  {stat.value}
-                </dd>
-              </div>
-            ))}
+                  <dt className="text-label font-semibold uppercase tracking-wide text-ink-muted">
+                    {label}
+                  </dt>
+                  <dd
+                    className={`font-display text-4xl font-extrabold leading-none ${stat.valueClass}`}
+                  >
+                    {isFau ? (
+                      <span className="inline-flex h-10 items-center rounded-md bg-white px-2 ring-1 ring-surface-strong">
+                        <Image
+                          src={fau.src}
+                          alt={fau.alt}
+                          width={80}
+                          height={40}
+                          className="h-8 w-auto object-contain"
+                        />
+                      </span>
+                    ) : (
+                      stat.value
+                    )}
+                  </dd>
+                </div>
+              );
+            })}
           </dl>
         </div>
 
