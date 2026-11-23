@@ -5,9 +5,7 @@ import Link from "next/link";
 import { Suspense, useEffect, useState, useSyncExternalStore } from "react";
 import type { ReactNode } from "react";
 import { Menu, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
-import AdminNavLinks, {
-  AdminNavFallback,
-} from "@/components/admin/AdminNavLinks";
+import AdminNavLinks, { AdminNavFallback } from "@/components/admin/AdminNavLinks";
 import { CREST_SRC } from "@/lib/admin/constants";
 
 // The collapsed choice is remembered in this browser. useSyncExternalStore
@@ -82,12 +80,12 @@ export default function AdminShell({
       <aside
         id="admin-sidebar"
         aria-label="Admin sidebar"
-        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-surface-strong bg-white transition-[transform,width] duration-200 lg:sticky lg:top-0 lg:z-20 lg:h-screen lg:shrink-0 lg:translate-x-0 lg:visible ${
+        className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col bg-navy text-white transition-[transform,width] duration-200 lg:sticky lg:top-0 lg:z-20 lg:h-screen lg:shrink-0 lg:translate-x-0 lg:visible ${
           open ? "visible translate-x-0" : "invisible -translate-x-full"
         } ${collapsed ? "lg:w-[4.5rem]" : "lg:w-64"}`}
       >
         <div
-          className={`flex h-16 shrink-0 items-center gap-3 border-b border-surface-strong px-4 ${
+          className={`flex h-16 shrink-0 items-center gap-3 border-b border-white/10 px-4 ${
             collapsed ? "lg:justify-center lg:px-0" : ""
           }`}
         >
@@ -96,20 +94,16 @@ export default function AdminShell({
             title="Nansana ASKA Admin"
             className="flex min-w-0 items-center gap-3"
           >
-            <Image
-              src={CREST_SRC}
-              alt=""
-              width={36}
-              height={36}
-              className="shrink-0"
-            />
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white p-0.5">
+              <Image src={CREST_SRC} alt="" width={32} height={32} />
+            </span>
             <span
-              className={`font-display text-lg font-extrabold uppercase leading-none text-navy ${
+              className={`font-display text-lg font-extrabold uppercase leading-none text-white ${
                 collapsed ? "lg:sr-only" : ""
               }`}
             >
               Nansana ASKA
-              <span className="block text-label tracking-widest text-gold-deep">
+              <span className="block text-label tracking-widest text-gold-soft">
                 Admin
               </span>
             </span>
@@ -118,7 +112,7 @@ export default function AdminShell({
             type="button"
             aria-label="Close menu"
             onClick={() => setOpen(false)}
-            className="ml-auto rounded-md p-2 text-navy lg:hidden"
+            className="ml-auto rounded-md p-2 text-white hover:bg-white/10 lg:hidden"
           >
             <X size={22} aria-hidden />
           </button>

@@ -2,9 +2,10 @@ import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
 import Photo from "@/components/ui/Photo";
-import { heroStats } from "@/lib/team";
 import { photos } from "@/lib/photos";
 import type { PhotoAsset } from "@/lib/photos";
+
+export type HeroStat = { value: string; label: string; valueClass: string };
 
 function Tile({
   className,
@@ -59,7 +60,7 @@ function Tile({
   );
 }
 
-export default function TeamHero() {
+export default function TeamHero({ stats }: { stats: HeroStat[] }) {
   return (
     <section className="bg-linear-to-br from-surface-strong via-surface-tint to-surface py-12 lg:py-16">
       <div className="mx-auto grid w-full max-w-site items-center gap-10 px-4 lg:grid-cols-2">
@@ -93,7 +94,7 @@ export default function TeamHero() {
           </div>
 
           <dl className="mt-8 flex flex-wrap gap-3">
-            {heroStats.map((stat) => (
+            {stats.map((stat) => (
               <div
                 key={stat.label}
                 className="flex min-w-32 flex-col-reverse rounded-lg bg-white px-4 py-3 shadow-card"

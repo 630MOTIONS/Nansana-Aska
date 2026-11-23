@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { Users } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
-import { players, positionLabels, squadOptions } from "@/lib/team";
-import type { Position, SquadId } from "@/lib/team";
+import { positionLabels, squadOptions } from "@/lib/public/people-meta";
+import type { Player, Position, SquadId } from "@/lib/team";
 import PlayerCard from "./PlayerCard";
 
 type PositionFilter = Position | "all";
@@ -17,15 +17,14 @@ const positionFilters: { id: PositionFilter; label: string }[] = [
   })),
 ];
 
-export default function TeamRoster() {
+export default function TeamRoster({ players }: { players: Player[] }) {
   const [squad, setSquad] = useState<SquadId>("men");
   const [position, setPosition] = useState<PositionFilter>("all");
 
   const visible = players.filter(
     (p) => p.squad === squad && (position === "all" || p.position === position),
   );
-  const countFor = (id: SquadId) =>
-    players.filter((p) => p.squad === id).length;
+  const countFor = (id: SquadId) => players.filter((p) => p.squad === id).length;
 
   return (
     <section
@@ -66,7 +65,9 @@ export default function TeamRoster() {
                   {option.label}
                   <span
                     className={`rounded-full px-2 py-0.5 text-label font-bold ${
-                      active ? "bg-brand-orange text-ink" : "bg-white text-navy"
+                      active
+                        ? "bg-brand-orange text-ink"
+                        : "bg-white text-navy"
                     }`}
                   >
                     {countFor(option.id)}

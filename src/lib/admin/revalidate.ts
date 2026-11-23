@@ -19,3 +19,13 @@ export function refreshGalleryAfterChange() {
   revalidatePath("/admin", "layout");
   updateTag("gallery");
 }
+
+export function refreshPeopleAfterChange() {
+  revalidatePath("/admin", "layout");
+  updateTag("people");
+}
+
+export function refreshHighlightsAfterChange() {
+  revalidatePath("/admin", "layout");
+  updateTag("highlights");
+}

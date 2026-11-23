@@ -103,5 +103,24 @@ export async function POST(request: Request) {
     return reply({ ok: true, id: result.data.id });
   }
 
+  if (purpose === "player" || purpose === "staff" || purpose === "thumbnail") {
+    const id = form.get("id");
+    if (typeof id !== "string" || !/^[a-z0-9]+$/.test(id)) {
+      return reply({ error: "Missing item." }, 400);
+    }
+    const base =
+      purpose === "player" ? "players" : purpose === "staff" ? "staff" : "highlights";
+    const part = purpose === "thumbnail" ? "thumbnail" : "photo";
+    const result = await apiRequest(
+      `/admin/${base}/${encodeURIComponent(id)}/${part}`,
+      { method: "PUT", token, form: outgoing },
+    );
+    if (!result.ok) {
+      return reply({ error: result.message }, result.status || 502);
+    }
+    revalidatePath("/admin", "layout");
+    return reply({ ok: true });
+  }
+
   return reply({ error: "Unknown upload type." }, 400);
 }

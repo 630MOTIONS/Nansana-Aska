@@ -1,13 +1,17 @@
+import Image from "next/image";
 import { CirclePlay, Play, PlaySquare } from "lucide-react";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
-import { spotlight } from "@/lib/highlights";
-import Image from "next/image";
+import { isRemoteImage } from "@/lib/public/media";
+import type { PublicVideo } from "@/lib/public/highlights-meta";
+import VideoPlayer from "./VideoPlayer";
 
-export default function HighlightsHero() {
-  const playable = Boolean(spotlight.videoUrl);
-
+export default function HighlightsHero({
+  spotlight,
+}: {
+  spotlight: PublicVideo | null;
+}) {
   return (
     <section className="bg-surface-tint pb-12 pt-10 lg:pb-16">
       <div className="mx-auto w-full max-w-site px-4">
@@ -31,10 +35,7 @@ export default function HighlightsHero() {
             </p>
           </div>
           <div className="flex flex-wrap gap-3 lg:flex-col">
-            <Button
-              href="#featured"
-              icon={<CirclePlay size={16} aria-hidden />}
-            >
+            <Button href="#featured" icon={<CirclePlay size={16} aria-hidden />}>
               Watch latest highlights
             </Button>
             <Button
@@ -47,62 +48,67 @@ export default function HighlightsHero() {
           </div>
         </div>
 
-        <figure className="relative mt-10 overflow-hidden rounded-2xl shadow-card">
-          <div className="relative min-h-[24rem] lg:min-h-[28rem]">
-            {spotlight.poster ? (
-              <Image
-                src={spotlight.poster}
-                alt=""
-                fill
-                sizes="(min-width: 1152px) 1152px, 100vw"
-                className="object-cover"
-                priority
-              />
-            ) : (
-              <MediaPlaceholder className="absolute inset-0 h-full w-full" />
-            )}
-            <div
-              className="absolute inset-0 bg-linear-to-t from-navy-deep/95 via-navy-deep/30 to-transparent"
-              aria-hidden="true"
-            />
-
-            <Badge variant="orange" className="absolute left-4 top-4">
-              {spotlight.badge}
-            </Badge>
-
-            {playable && (
-              <a
-                href={spotlight.videoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Play: ${spotlight.title}`}
-                className="absolute left-1/2 top-[38%] flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-xl bg-brand-orange text-ink transition-transform hover:scale-110"
-              >
-                <Play size={28} fill="currentColor" aria-hidden />
-              </a>
-            )}
-
-            <figcaption className="absolute inset-x-0 bottom-0 p-5 sm:p-8">
-              <p className="flex flex-wrap items-center gap-2 text-label font-bold uppercase tracking-widest text-gold-soft">
-                {spotlight.kicker}
-                <span className="rounded-sm bg-navy px-2 py-0.5 font-mono text-white">
-                  {spotlight.duration}
-                </span>
-              </p>
-              <h2 className="mt-2 max-w-3xl text-section text-white">
-                {spotlight.title}
-              </h2>
-              <p className="mt-2 max-w-2xl text-white/85">
-                {spotlight.description}
-              </p>
-              {!playable && (
-                <p className="mt-3 text-label font-bold uppercase tracking-wide text-white/70">
-                  Video coming soon
-                </p>
+        {spotlight && (
+          <figure className="relative mt-10 overflow-hidden rounded-2xl shadow-card">
+            <div className="relative min-h-[24rem] lg:min-h-[28rem]">
+              {spotlight.poster ? (
+                <Image
+                  src={spotlight.poster}
+                  alt=""
+                  fill
+                  unoptimized={isRemoteImage(spotlight.poster)}
+                  sizes="(min-width: 1152px) 1152px, 100vw"
+                  className="object-cover"
+                  priority
+                />
+              ) : (
+                <MediaPlaceholder className="absolute inset-0 h-full w-full" />
               )}
-            </figcaption>
-          </div>
-        </figure>
+              <div
+                className="absolute inset-0 bg-linear-to-t from-navy-deep/95 via-navy-deep/30 to-transparent"
+                aria-hidden="true"
+              />
+
+              <Badge variant="orange" className="absolute left-4 top-4">
+                Spotlight
+              </Badge>
+
+              {spotlight.url && (
+                <VideoPlayer
+                  video={spotlight}
+                  className="absolute left-1/2 top-[38%] flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-xl bg-brand-orange text-ink transition-transform hover:scale-110"
+                >
+                  <Play size={28} fill="currentColor" aria-hidden />
+                  <span className="sr-only">Play: {spotlight.title}</span>
+                </VideoPlayer>
+              )}
+
+              <figcaption className="absolute inset-x-0 bottom-0 p-5 sm:p-8">
+                <p className="flex flex-wrap items-center gap-2 text-label font-bold uppercase tracking-widest text-gold-soft">
+                  {spotlight.kicker ?? spotlight.date}
+                  {spotlight.duration && (
+                    <span className="rounded-sm bg-navy px-2 py-0.5 font-mono text-white">
+                      {spotlight.duration}
+                    </span>
+                  )}
+                </p>
+                <h2 className="mt-2 max-w-3xl text-section text-white">
+                  {spotlight.title}
+                </h2>
+                {spotlight.description && (
+                  <p className="mt-2 max-w-2xl text-white/85">
+                    {spotlight.description}
+                  </p>
+                )}
+                {!spotlight.url && (
+                  <p className="mt-3 text-label font-bold uppercase tracking-wide text-white/70">
+                    Video coming soon
+                  </p>
+                )}
+              </figcaption>
+            </div>
+          </figure>
+        )}
       </div>
     </section>
   );

@@ -28,6 +28,11 @@ export default function Home() {
 
 // Reads the latest articles from the API, so it streams in behind the fallback.
 async function LatestNews() {
-  const articles = await getPublishedArticles();
+  let articles: Awaited<ReturnType<typeof getPublishedArticles>> = [];
+  try {
+    articles = await getPublishedArticles();
+  } catch {
+    // The API is unavailable. Show the section empty instead of failing the page.
+  }
   return <News articles={articles.slice(0, 3)} />;
 }
