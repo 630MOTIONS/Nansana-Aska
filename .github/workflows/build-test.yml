@@ -1,0 +1,36 @@
+name: Build test site
+on:
+  workflow_dispatch:
+  push:
+    branches: [feat/Home]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Wake the API (Render free tier sleeps)
+        run: curl -s --retry 6 --retry-delay 15 --max-time 90 https://nansana-aska-api.onrender.com/health
+      - run: pnpm build
+        env:
+          NEXT_PUBLIC_API_URL: https://nansana-aska-api.onrender.com
+          ADMIN_API_URL: https://nansana-aska-api.onrender.com
+          PREVIEW_BANNER: "1"
+      - name: Assemble release
+        run: |
+          mkdir -p release/.next
+          cp -r .next/standalone/. release/
+          cp -r .next/static release/.next/static
+          cp -r public release/public
+          cp deploy/app.js release/app.js
+          cd release && zip -qr ../site.zip .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: site.zip
