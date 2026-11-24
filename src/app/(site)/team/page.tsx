@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import ClubIdentity from "@/components/sections/team/ClubIdentity";
 import TeamCta from "@/components/sections/team/TeamCta";
 import TeamHero from "@/components/sections/team/TeamHero";
@@ -12,7 +13,23 @@ export const metadata: Metadata = {
     "Meet the players and coaches of Nansana ASKA Futsal Club, competing in the Uganda Futsal Super League.",
 };
 
-export default async function TeamPage() {
+export default function TeamPage() {
+  return (
+    <main id="main">
+      <Suspense
+        fallback={
+          <div className="min-h-screen bg-surface-tint" aria-hidden="true" />
+        }
+      >
+        <TeamContent />
+      </Suspense>
+    </main>
+  );
+}
+
+// Reads the players and staff from the database, so it streams in behind the
+// placeholder above.
+async function TeamContent() {
   const [players, staff] = await Promise.all([getPlayers(), getStaff()]);
 
   const squads = new Set(players.map((player) => player.squad)).size;
@@ -20,7 +37,11 @@ export default async function TeamPage() {
 
   // Real counts from the admin, not claims.
   const stats = [
-    { value: String(players.length), label: "Players", valueClass: "text-navy" },
+    {
+      value: String(players.length),
+      label: "Players",
+      valueClass: "text-navy",
+    },
     {
       value: String(squads),
       label: squads === 1 ? "Squad" : "Squads",
@@ -34,7 +55,7 @@ export default async function TeamPage() {
   ];
 
   return (
-    <main id="main">
+    <>
       <TeamHero stats={stats} />
       <TeamRoster players={players} />
       <TechnicalTeam
@@ -54,6 +75,6 @@ export default async function TeamPage() {
       />
       <ClubIdentity />
       <TeamCta />
-    </main>
+    </>
   );
 }

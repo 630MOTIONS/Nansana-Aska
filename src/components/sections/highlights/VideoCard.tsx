@@ -1,7 +1,6 @@
-import Image from "next/image";
+import Image from "@/components/ui/SmartImage";
 import { ArrowRight, Play } from "lucide-react";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
-import { isRemoteImage } from "@/lib/public/media";
 import { publicVideoCategories } from "@/lib/public/highlights-meta";
 import type { PublicVideo } from "@/lib/public/highlights-meta";
 import VideoPlayer from "./VideoPlayer";
@@ -24,7 +23,6 @@ export default function VideoCard({ video, compact = false }: VideoCardProps) {
             src={video.poster}
             alt=""
             fill
-            unoptimized={isRemoteImage(video.poster)}
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/components/ui/SmartImage";
 import Link from "next/link";
 import { Newspaper } from "lucide-react";
 import { tagClasses } from "@/components/sections/news/ArticleCard";
@@ -7,7 +7,6 @@ import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
 import SectionHeading from "@/components/ui/SectionHeading";
 import TextLink from "@/components/ui/TextLink";
 import type { Article } from "@/lib/articles";
-import { isRemoteImage } from "@/lib/public/media";
 
 // `articles` are the latest published ones, newest first.
 export default function News({ articles }: { articles: Article[] }) {
@@ -37,7 +36,6 @@ export default function News({ articles }: { articles: Article[] }) {
                     src={post.image}
                     alt=""
                     fill
-                    unoptimized={isRemoteImage(post.image)}
                     sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                     className="object-cover"
                   />

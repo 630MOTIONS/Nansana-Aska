@@ -1,19 +1,15 @@
-import { ArrowRight, Check } from "lucide-react";
-import Badge from "@/components/ui/Badge";
+import { ArrowRight, UserRound } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
+import Image from "@/components/ui/SmartImage";
 import SectionHeading from "@/components/ui/SectionHeading";
-import { leadership } from "@/lib/about";
-import type { Tone } from "@/components/ui/Tile";
+import type { StaffMember } from "@/lib/team";
 
-const checkTones: Record<Tone, string> = {
-  gold: "bg-brand-gold text-ink",
-  blue: "bg-brand-blue text-white",
-  orange: "bg-brand-orange text-ink",
-  navy: "bg-navy text-white",
-};
+// Club leadership first, then the technical team (the page passes them in that
+// order).
+export default function Leadership({ people }: { people: StaffMember[] }) {
+  if (people.length === 0) return null;
 
-export default function Leadership() {
   return (
     <section
       aria-label="Leadership and technical staff"
@@ -37,29 +33,38 @@ export default function Leadership() {
         </div>
 
         <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {leadership.map((person) => {
-            const Icon = person.icon;
-            return (
-              <li key={`${person.role}-${person.scope}`}>
-                <Card className="flex h-full flex-col items-center gap-1 p-6 text-center">
-                  <span className="relative mb-3 flex h-20 w-20 items-center justify-center rounded-xl bg-surface-tint text-navy">
-                    <Icon size={28} aria-hidden />
-                    <span
-                      className={`absolute -bottom-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full ${checkTones[person.tone]}`}
-                      aria-hidden="true"
-                    >
-                      <Check size={12} />
-                    </span>
-                  </span>
-                  <h3 className="text-card text-navy">{person.role}</h3>
+          {people.map((person) => (
+            <li key={person.id}>
+              <Card as="article" className="flex h-full flex-col">
+                <div className="relative aspect-[4/5] bg-surface-tint">
+                  {person.photo ? (
+                    <Image
+                      src={person.photo}
+                      alt={`${person.name}, ${person.role}`}
+                      fill
+                      sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                      className="object-cover object-top"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center text-navy/40">
+                      <UserRound size={56} aria-hidden />
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-col gap-1 p-5 text-center">
+                  <h3 className="text-card text-navy">{person.name}</h3>
                   <p className="text-label font-semibold uppercase tracking-wide text-ink-muted">
-                    {person.scope}
+                    {person.role}
                   </p>
-                  <Badge className="mt-2">{person.tag}</Badge>
-                </Card>
-              </li>
-            );
-          })}
+                  {person.kicker && (
+                    <p className="mx-auto mt-2 rounded-sm bg-surface-tint px-2 py-1 text-label font-bold uppercase tracking-wide text-navy">
+                      {person.kicker}
+                    </p>
+                  )}
+                </div>
+              </Card>
+            </li>
+          ))}
         </ul>
       </div>
     </section>

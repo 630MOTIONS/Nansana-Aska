@@ -1,9 +1,8 @@
-import Image from "next/image";
+import Image from "@/components/ui/SmartImage";
 import Link from "next/link";
 import Card from "@/components/ui/Card";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
 import type { Article, TagTone } from "@/lib/articles";
-import { isRemoteImage } from "@/lib/public/media";
 
 export const tagClasses: Record<TagTone, string> = {
   navy: "bg-navy text-white",
@@ -43,7 +42,6 @@ export default function ArticleCard({ article }: { article: Article }) {
               src={article.image}
               alt=""
               fill
-              unoptimized={isRemoteImage(article.image)}
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
               className="object-cover transition-transform duration-300 group-hover:scale-105"
             />

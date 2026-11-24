@@ -1,9 +1,8 @@
-import Image from "next/image";
+import Image from "@/components/ui/SmartImage";
 import { ArrowDown, CalendarDays, Camera, FolderOpen, Images } from "lucide-react";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
-import { isRemoteImage } from "@/lib/public/media";
 import type { PublicPhoto } from "@/lib/public/gallery-meta";
 
 type GalleryHeroProps = {
@@ -53,7 +52,6 @@ export default function GalleryHero({
                   src={featured.photo}
                   alt=""
                   fill
-                  unoptimized={isRemoteImage(featured.photo)}
                   sizes="(min-width: 1152px) 1152px, 100vw"
                   className="object-cover"
                   priority

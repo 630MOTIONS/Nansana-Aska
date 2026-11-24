@@ -75,7 +75,7 @@ export default function PersonPhotoPanel({
           />
           <p className="mt-1 text-sm text-ink-muted">
             A portrait works best (shown in a 3:4 frame). PNG, JPEG or WebP, up
-            to 8 MB. It is resized, and location data is removed.{" "}
+            to 30 MB. It is resized, and location data is removed.{" "}
             {uploading && "Uploading…"}
           </p>
         </div>

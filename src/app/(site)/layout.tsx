@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
+import { Suspense } from "react";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import TopBar from "@/components/layout/TopBar";
+import { getNextFixtureLabel } from "@/lib/public/next-fixture";
 
 // Shown on preview deployments (PREVIEW_BANNER=1) so a reviewer does not take
 // the sample fixtures, scores and articles for real club information.
@@ -18,6 +20,13 @@ function PreviewBanner() {
   );
 }
 
+// The next fixture comes from the database, so the header streams it in. The
+// header itself appears straight away, just without the fixture.
+async function LiveHeader() {
+  const label = await getNextFixtureLabel();
+  return <Header nextFixture={label} />;
+}
+
 export default function SiteLayout({ children }: { children: ReactNode }) {
   return (
     <>
@@ -29,7 +38,9 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
       </a>
       <PreviewBanner />
       <TopBar />
-      <Header />
+      <Suspense fallback={<Header nextFixture={null} />}>
+        <LiveHeader />
+      </Suspense>
       <div className="flex-1">{children}</div>
       <Footer />
     </>

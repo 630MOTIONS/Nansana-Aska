@@ -72,7 +72,7 @@ export default function CoverPanel({
             className={controlClass}
           />
           <p className="mt-1 text-sm text-ink-muted">
-            PNG, JPEG or WebP, up to 8 MB. It is resized, and location data is
+            PNG, JPEG or WebP, up to 30 MB. It is resized, and location data is
             removed. {uploading && "Uploading…"}
           </p>
         </div>

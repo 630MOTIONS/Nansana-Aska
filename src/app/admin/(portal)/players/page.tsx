@@ -72,7 +72,7 @@ export default async function PlayersPage(props: {
       ) : (
         <ul className="divide-y divide-surface-strong overflow-hidden rounded-xl bg-white shadow-card">
           {players.map((player) => {
-            const src = logoSrc(player.photoUrl);
+            const src = logoSrc(player.photoUrl, 480);
             return (
               <li key={player.id}>
                 <Link

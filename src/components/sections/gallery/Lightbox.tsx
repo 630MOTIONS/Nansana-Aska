@@ -1,10 +1,9 @@
 "use client";
 
-import Image from "next/image";
+import Image from "@/components/ui/SmartImage";
 import { useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
-import { isRemoteImage } from "@/lib/public/media";
 import type { PublicPhoto } from "@/lib/public/gallery-meta";
 
 type LightboxProps = {
@@ -57,7 +56,6 @@ export default function Lightbox({
                 src={item.photo}
                 alt={item.title}
                 fill
-                unoptimized={isRemoteImage(item.photo)}
                 sizes="(min-width: 1024px) 1024px, 92vw"
                 className="object-contain"
               />

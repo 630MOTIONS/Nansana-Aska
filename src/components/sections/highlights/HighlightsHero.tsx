@@ -1,9 +1,8 @@
-import Image from "next/image";
+import Image from "@/components/ui/SmartImage";
 import { CirclePlay, Play, PlaySquare } from "lucide-react";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
-import { isRemoteImage } from "@/lib/public/media";
 import type { PublicVideo } from "@/lib/public/highlights-meta";
 import VideoPlayer from "./VideoPlayer";
 
@@ -56,7 +55,6 @@ export default function HighlightsHero({
                   src={spotlight.poster}
                   alt=""
                   fill
-                  unoptimized={isRemoteImage(spotlight.poster)}
                   sizes="(min-width: 1152px) 1152px, 100vw"
                   className="object-cover"
                   priority

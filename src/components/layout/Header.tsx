@@ -6,9 +6,14 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import Button from "@/components/ui/Button";
-import { navLinks, nextFixture, siteConfig } from "@/lib/site";
+import { navLinks, siteConfig } from "@/lib/site";
 
-export default function Header() {
+export default function Header({
+  nextFixture,
+}: {
+  // For example "Matchday 14 vs Park FC". Hidden when there is none.
+  nextFixture?: string | null;
+}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -18,11 +23,7 @@ export default function Header() {
   return (
     <header className="border-b border-brand-gold/40 bg-white">
       <div className="mx-auto flex w-full max-w-site items-center justify-between gap-4 px-4 py-3">
-        <Link
-          href="/"
-          className="flex items-center gap-3"
-          aria-label={siteConfig.fullName}
-        >
+        <Link href="/" className="flex items-center gap-3" aria-label={siteConfig.fullName}>
           <Image
             src={siteConfig.crest}
             alt=""
@@ -62,14 +63,14 @@ export default function Header() {
         </nav>
 
         <div className="hidden items-center gap-4 xl:flex">
-          <div className="text-right leading-tight">
-            <p className="text-[0.625rem] font-bold uppercase tracking-widest text-ink-muted">
-              Next fixture
-            </p>
-            <p className="text-label font-bold text-navy">
-              {nextFixture.label}
-            </p>
-          </div>
+          {nextFixture && (
+            <div className="text-right leading-tight">
+              <p className="text-[0.625rem] font-bold uppercase tracking-widest text-ink-muted">
+                Next fixture
+              </p>
+              <p className="text-label font-bold text-navy">{nextFixture}</p>
+            </div>
+          )}
           <Button href="/contact">Join the club</Button>
         </div>
 
@@ -107,6 +108,12 @@ export default function Header() {
               </li>
             ))}
           </ul>
+          {nextFixture && (
+            <p className="mt-4 text-sm text-ink-muted">
+              Next fixture:{" "}
+              <strong className="text-navy">{nextFixture}</strong>
+            </p>
+          )}
           <Button href="/contact" className="mt-4 w-full">
             Join the club
           </Button>

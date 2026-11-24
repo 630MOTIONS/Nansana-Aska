@@ -1,9 +1,8 @@
-import Image from "next/image";
+import Image from "@/components/ui/SmartImage";
 import { Shield } from "lucide-react";
 import Card from "@/components/ui/Card";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
 import SectionHeading from "@/components/ui/SectionHeading";
-import { isRemoteImage } from "@/lib/public/media";
 import type { StaffMember } from "@/lib/team";
 
 type TechnicalTeamProps = {
@@ -52,7 +51,6 @@ export default function TechnicalTeam({
                       src={member.photo}
                       alt={`${member.name}, ${member.role}`}
                       fill
-                      unoptimized={isRemoteImage(member.photo)}
                       sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
                       className="object-cover object-top"
                     />
