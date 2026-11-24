@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "@/components/ui/SmartImage";
 import { ArrowRight } from "lucide-react";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
@@ -6,7 +6,6 @@ import Card from "@/components/ui/Card";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
 import SectionHeading from "@/components/ui/SectionHeading";
 import type { Article } from "@/lib/articles";
-import { isRemoteImage } from "@/lib/public/media";
 
 export default function FeaturedStory({ story }: { story: Article }) {
   return (
@@ -30,7 +29,6 @@ export default function FeaturedStory({ story }: { story: Article }) {
                 src={story.image}
                 alt=""
                 fill
-                unoptimized={isRemoteImage(story.image)}
                 sizes="(min-width: 1024px) 60vw, 100vw"
                 className="object-cover"
               />

@@ -1,9 +1,8 @@
-import Image from "next/image";
+import Image from "@/components/ui/SmartImage";
 import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
 import type { Player } from "@/lib/team";
-import { isRemoteImage } from "@/lib/public/media";
 import { positionLabels } from "@/lib/public/people-meta";
 
 const roleLabels = {
@@ -22,9 +21,8 @@ export default function PlayerCard({ player }: { player: Player }) {
             src={player.photo}
             alt={`${player.name}, ${positionLabel}`}
             fill
-            unoptimized={isRemoteImage(player.photo)}
             sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover"
+            className="object-cover object-top"
           />
         ) : (
           <MediaPlaceholder className="h-full w-full" />

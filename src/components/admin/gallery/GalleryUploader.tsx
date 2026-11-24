@@ -96,7 +96,7 @@ export default function GalleryUploader() {
         <Field
           id="upload-files"
           label="Photos"
-          hint={`Up to ${MAX_FILES}, 8 MB each`}
+          hint={`Up to ${MAX_FILES}, 30 MB each`}
         >
           <input
             id="upload-files"

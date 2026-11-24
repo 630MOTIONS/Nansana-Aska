@@ -93,7 +93,7 @@ export default function ThumbnailPanel({
             className={controlClass}
           />
           <p className="mt-1 text-sm text-ink-muted">
-            A wide (16:9) picture works best. PNG, JPEG or WebP, up to 8 MB.{" "}
+            A wide (16:9) picture works best. PNG, JPEG or WebP, up to 30 MB.{" "}
             {uploading && "Uploading…"}
           </p>
         </div>

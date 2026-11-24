@@ -1,9 +1,8 @@
-import Image from "next/image";
+import Image from "@/components/ui/SmartImage";
 import { Flame, Play } from "lucide-react";
 import Card from "@/components/ui/Card";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
 import SectionHeading from "@/components/ui/SectionHeading";
-import { isRemoteImage } from "@/lib/public/media";
 import {
   publicVideoCategories,
 } from "@/lib/public/highlights-meta";
@@ -43,7 +42,6 @@ export default function FeaturedHighlight({ video }: { video: PublicVideo | null
                 src={video.poster}
                 alt=""
                 fill
-                unoptimized={isRemoteImage(video.poster)}
                 sizes="(min-width: 1024px) 60vw, 100vw"
                 className="object-cover"
               />

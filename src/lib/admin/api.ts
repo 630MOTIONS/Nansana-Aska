@@ -48,6 +48,8 @@ export async function apiRequest<T>(
     // A JSON body, or a multipart form (for file uploads). Use one or the other.
     body?: unknown;
     form?: FormData;
+    // Uploads of large photos need longer than ordinary requests.
+    timeoutMs?: number;
   } = {},
 ): Promise<ApiResult<T>> {
   const method = options.method ?? "GET";
@@ -75,7 +77,7 @@ export async function apiRequest<T>(
       },
       body: options.form ?? (hasJson ? JSON.stringify(options.body) : undefined),
       cache: "no-store",
-      signal: AbortSignal.timeout(15000),
+      signal: AbortSignal.timeout(options.timeoutMs ?? 15000),
     });
     status = response.status;
     text = status === 204 ? "" : await response.text();

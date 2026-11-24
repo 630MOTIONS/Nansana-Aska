@@ -1,11 +1,10 @@
-import Image from "next/image";
+import Image from "@/components/ui/SmartImage";
 import { Play } from "lucide-react";
 import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
 import SectionHeading from "@/components/ui/SectionHeading";
 import TextLink from "@/components/ui/TextLink";
-import { isRemoteImage } from "@/lib/public/media";
 import type { PublicVideo } from "@/lib/public/highlights-meta";
 import VideoPlayer from "./VideoPlayer";
 
@@ -42,7 +41,6 @@ export default function MatchRecaps({ videos }: { videos: PublicVideo[] }) {
                         src={recap.poster}
                         alt=""
                         fill
-                        unoptimized={isRemoteImage(recap.poster)}
                         sizes="(min-width: 640px) 20vw, 100vw"
                         className="object-cover"
                       />

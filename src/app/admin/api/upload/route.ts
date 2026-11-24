@@ -3,9 +3,11 @@ import { apiRequest } from "@/lib/admin/api";
 import { getSessionToken } from "@/lib/admin/session";
 
 // Server Actions refuse request bodies over 1 MB, which is too small for
-// photos. This route accepts up to 8 MB, checks the session cookie, and passes
+// photos. This route accepts up to 30 MB, checks the session cookie, and passes
 // the image on to the API (which checks the session again, and resizes it).
-const MAX_BYTES = 8 * 1024 * 1024;
+const MAX_BYTES = 30 * 1024 * 1024;
+const TOO_LARGE = "That image is too large. The limit is 30 MB.";
+const SLOW = 60_000; // large photos take a while to process
 
 function reply(body: Record<string, unknown>, status = 200) {
   return Response.json(body, {
@@ -25,6 +27,10 @@ function sameOrigin(request: Request): boolean {
 }
 
 export async function POST(request: Request) {
+  // Switched on for preview deployments that have no API behind them.
+  if (process.env.ADMIN_DISABLED === "1") {
+    return reply({ error: "Not found." }, 404);
+  }
   if (!sameOrigin(request)) return reply({ error: "Forbidden." }, 403);
 
   const token = await getSessionToken();
@@ -33,9 +39,7 @@ export async function POST(request: Request) {
   }
 
   const length = Number(request.headers.get("content-length") ?? 0);
-  if (length > MAX_BYTES + 200_000) {
-    return reply({ error: "That image is too large. The limit is 8 MB." }, 413);
-  }
+  if (length > MAX_BYTES + 200_000) return reply({ error: TOO_LARGE }, 413);
 
   let form: FormData;
   try {
@@ -48,9 +52,7 @@ export async function POST(request: Request) {
   if (!(file instanceof File) || file.size === 0) {
     return reply({ error: "Choose an image file." }, 400);
   }
-  if (file.size > MAX_BYTES) {
-    return reply({ error: "That image is too large. The limit is 8 MB." }, 413);
-  }
+  if (file.size > MAX_BYTES) return reply({ error: TOO_LARGE }, 413);
 
   const outgoing = new FormData();
   outgoing.append("file", file, file.name);
@@ -62,6 +64,7 @@ export async function POST(request: Request) {
       method: "POST",
       token,
       form: outgoing,
+      timeoutMs: SLOW,
     });
     if (!result.ok) {
       return reply({ error: result.message }, result.status || 502);
@@ -76,7 +79,7 @@ export async function POST(request: Request) {
     }
     const result = await apiRequest(
       `/admin/articles/${encodeURIComponent(slug)}/cover`,
-      { method: "PUT", token, form: outgoing },
+      { method: "PUT", token, form: outgoing, timeoutMs: SLOW },
     );
     if (!result.ok) {
       return reply({ error: result.message }, result.status || 502);
@@ -96,6 +99,7 @@ export async function POST(request: Request) {
       method: "POST",
       token,
       form: outgoing,
+      timeoutMs: SLOW,
     });
     if (!result.ok) {
       return reply({ error: result.message }, result.status || 502);
@@ -113,7 +117,7 @@ export async function POST(request: Request) {
     const part = purpose === "thumbnail" ? "thumbnail" : "photo";
     const result = await apiRequest(
       `/admin/${base}/${encodeURIComponent(id)}/${part}`,
-      { method: "PUT", token, form: outgoing },
+      { method: "PUT", token, form: outgoing, timeoutMs: SLOW },
     );
     if (!result.ok) {
       return reply({ error: result.message }, result.status || 502);

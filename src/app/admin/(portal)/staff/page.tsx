@@ -32,7 +32,7 @@ export default async function StaffPage() {
       ) : (
         <ul className="divide-y divide-surface-strong overflow-hidden rounded-xl bg-white shadow-card">
           {staff.map((member) => {
-            const src = logoSrc(member.photoUrl);
+            const src = logoSrc(member.photoUrl, 480);
             return (
               <li key={member.id}>
                 <Link

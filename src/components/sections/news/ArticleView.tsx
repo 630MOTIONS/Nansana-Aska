@@ -1,11 +1,10 @@
-import Image from "next/image";
+import Image from "@/components/ui/SmartImage";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, CalendarDays, Clock, PenLine } from "lucide-react";
 import ArticleBody from "@/components/news/ArticleBody";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
-import { isRemoteImage } from "@/lib/public/media";
 import { publicCategories } from "@/lib/public/news-meta";
 import type { PublicArticle } from "@/lib/public/news-meta";
 import ArticleCard from "./ArticleCard";
@@ -79,7 +78,6 @@ export default function ArticleView({
               src={article.image}
               alt=""
               fill
-              unoptimized={isRemoteImage(article.image)}
               sizes="(min-width: 768px) 768px, 100vw"
               className="object-cover"
               priority

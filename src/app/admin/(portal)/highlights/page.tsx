@@ -33,7 +33,7 @@ export default async function HighlightsAdminPage() {
       ) : (
         <ul className="divide-y divide-surface-strong overflow-hidden rounded-xl bg-white shadow-card">
           {videos.map((video) => {
-            const src = logoSrc(video.thumbnailUrl);
+            const src = logoSrc(video.thumbnailUrl, 480);
             return (
               <li key={video.id}>
                 <Link

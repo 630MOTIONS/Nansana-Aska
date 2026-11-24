@@ -1,7 +1,6 @@
-import Image from "next/image";
+import Image from "@/components/ui/SmartImage";
 import { ZoomIn } from "lucide-react";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
-import { isRemoteImage } from "@/lib/public/media";
 import { publicGalleryCategories } from "@/lib/public/gallery-meta";
 import type { PublicPhoto } from "@/lib/public/gallery-meta";
 
@@ -24,7 +23,6 @@ export default function GalleryCard({ item, onOpen }: GalleryCardProps) {
           src={item.photo}
           alt=""
           fill
-          unoptimized={isRemoteImage(item.photo)}
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
           className="object-cover transition-transform duration-300 group-hover:scale-105"
         />
