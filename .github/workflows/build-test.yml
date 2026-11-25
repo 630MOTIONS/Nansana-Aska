@@ -29,7 +29,10 @@ jobs:
           cp -r .next/static release/.next/static
           cp -r public release/public
           cp deploy/app.js release/app.js
-          cd release && zip -qr ../site.zip .
+          cd release
+          rm -rf node_modules
+          npm install --omit=dev --no-audit --no-fund
+          zip -qr ../site.zip .
       - uses: actions/upload-artifact@v4
         with:
           name: site
