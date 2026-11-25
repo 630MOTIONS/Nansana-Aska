@@ -14,7 +14,7 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-      - run: pnpm install --frozen-lockfile --config.node-linker=hoisted
+      - run: pnpm install --frozen-lockfile
       - name: Wake the API (Render free tier sleeps)
         run: curl -s --retry 6 --retry-delay 15 --max-time 90 https://nansana-aska-api.onrender.com/health
       - run: pnpm build
@@ -29,7 +29,10 @@ jobs:
           cp -r .next/static release/.next/static
           cp -r public release/public
           cp deploy/app.js release/app.js
-          cd release && zip -qr ../site.zip .
+          cd release
+          rm -rf node_modules
+          npm install --omit=dev --no-audit --no-fund
+          zip -qr ../site.zip .
       - uses: actions/upload-artifact@v4
         with:
           name: site
