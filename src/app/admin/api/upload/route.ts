@@ -107,6 +107,22 @@ export async function POST(request: Request) {
     return reply({ ok: true, id: result.data.id });
   }
 
+  if (purpose === "site") {
+    const key = form.get("key");
+    if (typeof key !== "string" || !/^[a-z_]+$/.test(key)) {
+      return reply({ error: "Unknown image place." }, 400);
+    }
+    const result = await apiRequest(
+      `/admin/site-images/${encodeURIComponent(key)}`,
+      { method: "PUT", token, form: outgoing, timeoutMs: SLOW },
+    );
+    if (!result.ok) {
+      return reply({ error: result.message }, result.status || 502);
+    }
+    revalidatePath("/admin", "layout");
+    return reply({ ok: true });
+  }
+
   if (purpose === "player" || purpose === "staff" || purpose === "thumbnail") {
     const id = form.get("id");
     if (typeof id !== "string" || !/^[a-z0-9]+$/.test(id)) {

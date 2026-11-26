@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   CalendarDays,
   Film,
+  ImagePlus,
   Images,
   LayoutDashboard,
   Newspaper,
@@ -33,6 +34,7 @@ const groups = [
       { href: "/admin/news", label: "News", icon: Newspaper, exact: false },
       { href: "/admin/gallery", label: "Gallery", icon: Images, exact: false },
       { href: "/admin/highlights", label: "Highlights", icon: Film, exact: false },
+      { href: "/admin/page-images", label: "Page images", icon: ImagePlus, exact: false },
     ],
   },
   {

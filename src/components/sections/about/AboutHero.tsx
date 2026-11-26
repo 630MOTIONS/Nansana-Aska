@@ -3,10 +3,12 @@ import { ArrowRight, Images } from "lucide-react";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
+import SmartImage from "@/components/ui/SmartImage";
 import { aboutStats } from "@/lib/about";
 import { leagueLogos } from "@/lib/clubs";
+import type { SiteImage } from "@/lib/public/site-images";
 
-export default function AboutHero() {
+export default function AboutHero({ image }: { image?: SiteImage }) {
   const fau = leagueLogos.fau;
 
   return (
@@ -35,7 +37,10 @@ export default function AboutHero() {
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button href="/team" icon={<ArrowRight size={14} aria-hidden />}>
+            <Button
+              href="/team"
+              icon={<ArrowRight size={14} aria-hidden />}
+            >
               Explore our team
             </Button>
             <Button
@@ -86,7 +91,20 @@ export default function AboutHero() {
         </div>
 
         <div className="relative overflow-hidden rounded-2xl shadow-card">
-          <MediaPlaceholder className="aspect-[4/3]" />
+          <div className="relative aspect-[4/3]">
+            {image ? (
+              <SmartImage
+                src={image.src}
+                alt={image.alt}
+                fill
+                priority
+                sizes="(min-width: 1024px) 540px, 100vw"
+                className="object-cover"
+              />
+            ) : (
+              <MediaPlaceholder className="absolute inset-0 h-full w-full" />
+            )}
+          </div>
           <div
             className="absolute inset-0 bg-linear-to-t from-navy-deep/85 via-transparent to-transparent"
             aria-hidden="true"

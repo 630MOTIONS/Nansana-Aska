@@ -3,10 +3,12 @@ import { ArrowDown, ArrowRight, BadgeCheck } from "lucide-react";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
+import SmartImage from "@/components/ui/SmartImage";
 import { trustStrip } from "@/lib/contact";
+import type { SiteImage } from "@/lib/public/site-images";
 import { siteConfig } from "@/lib/site";
 
-export default function ContactHero() {
+export default function ContactHero({ image }: { image?: SiteImage }) {
   return (
     <section className="bg-linear-to-br from-surface-strong via-surface-tint to-surface pt-10">
       <div className="mx-auto grid w-full max-w-site items-center gap-10 px-4 pb-12 lg:grid-cols-2">
@@ -40,7 +42,20 @@ export default function ContactHero() {
         </div>
 
         <div className="relative overflow-hidden rounded-2xl shadow-card">
-          <MediaPlaceholder className="aspect-[4/3]" />
+          <div className="relative aspect-[4/3]">
+            {image ? (
+              <SmartImage
+                src={image.src}
+                alt={image.alt}
+                fill
+                priority
+                sizes="(min-width: 1024px) 540px, 100vw"
+                className="object-cover"
+              />
+            ) : (
+              <MediaPlaceholder className="absolute inset-0 h-full w-full" />
+            )}
+          </div>
           <div className="absolute inset-x-4 bottom-4 flex items-center gap-3 rounded-lg bg-white p-3 shadow-card">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-surface-tint">
               <Image src={siteConfig.crest} alt="" width={32} height={32} />

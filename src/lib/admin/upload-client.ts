@@ -14,6 +14,7 @@ export type UploadTarget =
   | { purpose: "inline" }
   | { purpose: "cover"; slug: string }
   | { purpose: "gallery"; category: string }
+  | { purpose: "site"; key: string }
   | { purpose: "player" | "staff" | "thumbnail"; id: string };
 
 async function shrink(file: File): Promise<File> {
@@ -75,6 +76,7 @@ export async function uploadImage(
   form.append("purpose", target.purpose);
   if (target.purpose === "cover") form.append("slug", target.slug);
   if (target.purpose === "gallery") form.append("category", target.category);
+  if (target.purpose === "site") form.append("key", target.key);
   if (
     target.purpose === "player" ||
     target.purpose === "staff" ||
