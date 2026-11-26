@@ -3,8 +3,6 @@
 import Image from "next/image";
 import type { ImageProps } from "next/image";
 
-const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/+$/, "");
-
 // next/image asks for several widths (its "srcset"). The API answers each with
 // the smallest stored copy that is at least that wide.
 function apiLoader({ src, width }: { src: string; width: number }) {
@@ -14,7 +12,7 @@ function apiLoader({ src, width }: { src: string; width: number }) {
 export default function SmartImage(props: ImageProps) {
   const src = typeof props.src === "string" ? props.src : "";
 
-  if (API_URL && src.startsWith(`${API_URL}/`)) {
+  if (src.startsWith("/media/")) {
     return <Image {...props} loader={apiLoader} />;
   }
   // Any other web address cannot be optimised by this site.
