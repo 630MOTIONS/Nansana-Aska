@@ -20,7 +20,16 @@ function sameOrigin(request: Request): boolean {
   const origin = request.headers.get("origin");
   if (!origin) return false;
   try {
-    return new URL(origin).host === new URL(request.url).host;
+    const originHost = new URL(origin).host;
+    const allowed = new Set<string>();
+    allowed.add(new URL(request.url).host);
+    const host = request.headers.get("host");
+    if (host) allowed.add(host);
+    const forwarded = request.headers.get("x-forwarded-host");
+    if (forwarded) {
+      for (const h of forwarded.split(",")) allowed.add(h.trim());
+    }
+    return allowed.has(originHost);
   } catch {
     return false;
   }
