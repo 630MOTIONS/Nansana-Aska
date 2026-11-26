@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { ClubLogo } from "@/lib/clubs";
 import { siteConfig } from "@/lib/site";
+import { isRemoteImage } from "@/lib/public/media";
 
 type TeamLogoProps = {
   name: string;
@@ -58,14 +59,11 @@ export default function TeamLogo({
           alt=""
           width={px}
           height={px}
-          unoptimized={/^https?:\/\//.test(src)}
+          unoptimized={isRemoteImage(src)}
           className="h-full w-full object-contain"
         />
       ) : (
-        <span
-          className={`font-bold text-ink-muted ${text}`}
-          aria-hidden="true"
-        >
+        <span className={`font-bold text-ink-muted ${text}`} aria-hidden="true">
           {initials ?? initialsOf(name)}
         </span>
       )}

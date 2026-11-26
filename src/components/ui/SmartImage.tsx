@@ -12,10 +12,13 @@ function apiLoader({ src, width }: { src: string; width: number }) {
 export default function SmartImage(props: ImageProps) {
   const src = typeof props.src === "string" ? props.src : "";
 
+  // Uploaded photos: the API resizes them, so ask it for the width needed.
   if (src.startsWith("/media/")) {
     return <Image {...props} loader={apiLoader} />;
   }
-  // Any other web address cannot be optimised by this site.
-  if (/^https?:\/\//.test(src)) return <Image {...props} unoptimized />;
+  // Team logos and any other web address: shown as they are.
+  if (src.startsWith("/teams/") || /^https?:\/\//.test(src)) {
+    return <Image {...props} unoptimized />;
+  }
   return <Image {...props} />;
 }

@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       { source: "/media/:path*", destination: `${API_URL}/media/:path*` },
+      {
+        source: "/teams/:slug/logo",
+        destination: `${API_URL}/teams/:slug/logo`,
+      },
     ];
   },
 };

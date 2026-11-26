@@ -1,5 +1,5 @@
-import Image from "next/image";
 import type { PhotoAsset } from "@/lib/photos";
+import SmartImage from "@/components/ui/SmartImage";
 
 type PhotoProps = {
   photo: PhotoAsset;
@@ -20,7 +20,7 @@ export default function Photo({
   className,
 }: PhotoProps) {
   return (
-    <Image
+    <SmartImage
       src={photo.src}
       alt={decorative ? "" : photo.alt}
       fill
