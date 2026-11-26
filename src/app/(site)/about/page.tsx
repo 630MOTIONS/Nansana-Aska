@@ -10,6 +10,7 @@ import Values from "@/components/sections/about/Values";
 import WhoWeAre from "@/components/sections/about/WhoWeAre";
 import { getGallery } from "@/lib/public/gallery";
 import { getStaff } from "@/lib/public/people";
+import { getSiteImages } from "@/lib/public/site-images";
 
 export const metadata: Metadata = {
   title: "About",
@@ -20,9 +21,13 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <main id="main">
-      <AboutHero />
+      <Suspense fallback={<AboutHero />}>
+        <HeroSlot />
+      </Suspense>
       <WhoWeAre />
-      <Journey />
+      <Suspense fallback={<Journey />}>
+        <JourneySlot />
+      </Suspense>
       <MissionVision />
       <Values />
       <Suspense fallback={<div className="min-h-96 bg-surface-strong" aria-hidden="true" />}>
@@ -37,6 +42,17 @@ export default function AboutPage() {
 }
 
 // These read from the database, so they stream in behind their placeholders.
+// The placeholders are the same sections without a photo.
+async function HeroSlot() {
+  const images = await getSiteImages();
+  return <AboutHero image={images.about_hero} />;
+}
+
+async function JourneySlot() {
+  const images = await getSiteImages();
+  return <Journey milestoneImage={images.about_milestone} />;
+}
+
 async function ClubPeople() {
   const staff = await getStaff();
   return (

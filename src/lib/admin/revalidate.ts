@@ -29,3 +29,8 @@ export function refreshHighlightsAfterChange() {
   revalidatePath("/admin", "layout");
   updateTag("highlights");
 }
+
+export function refreshSiteImagesAfterChange() {
+  revalidatePath("/admin", "layout");
+  updateTag("site-images");
+}

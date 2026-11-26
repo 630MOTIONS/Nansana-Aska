@@ -2,15 +2,14 @@ import { ScrollText } from "lucide-react";
 import Card from "@/components/ui/Card";
 import MediaPlaceholder from "@/components/ui/MediaPlaceholder";
 import SectionHeading from "@/components/ui/SectionHeading";
+import SmartImage from "@/components/ui/SmartImage";
 import Tile from "@/components/ui/Tile";
 import { milestone, timeline } from "@/lib/about";
+import type { SiteImage } from "@/lib/public/site-images";
 
-export default function Journey() {
+export default function Journey({ milestoneImage }: { milestoneImage?: SiteImage }) {
   return (
-    <section
-      aria-label="Our story and journey"
-      className="bg-surface-tint py-16"
-    >
+    <section aria-label="Our story and journey" className="bg-surface-tint py-16">
       <div className="mx-auto w-full max-w-site px-4">
         <SectionHeading
           eyebrow="The evolution"
@@ -40,7 +39,19 @@ export default function Journey() {
         </ol>
 
         <Card className="mt-6 grid md:grid-cols-[1fr_1.6fr]">
-          <MediaPlaceholder className="min-h-56" />
+          <div className="relative min-h-56">
+            {milestoneImage ? (
+              <SmartImage
+                src={milestoneImage.src}
+                alt={milestoneImage.alt}
+                fill
+                sizes="(min-width: 768px) 440px, 100vw"
+                className="object-cover"
+              />
+            ) : (
+              <MediaPlaceholder className="absolute inset-0 h-full w-full" />
+            )}
+          </div>
           <div className="flex flex-col justify-center gap-3 p-6 sm:p-8">
             <p className="inline-flex items-center gap-2 text-label font-bold uppercase tracking-widest text-gold-deep">
               <ScrollText size={14} aria-hidden />

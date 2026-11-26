@@ -20,16 +20,7 @@ function sameOrigin(request: Request): boolean {
   const origin = request.headers.get("origin");
   if (!origin) return false;
   try {
-    const originHost = new URL(origin).host;
-    const allowed = new Set<string>();
-    allowed.add(new URL(request.url).host);
-    const host = request.headers.get("host");
-    if (host) allowed.add(host);
-    const forwarded = request.headers.get("x-forwarded-host");
-    if (forwarded) {
-      for (const h of forwarded.split(",")) allowed.add(h.trim());
-    }
-    return allowed.has(originHost);
+    return new URL(origin).host === new URL(request.url).host;
   } catch {
     return false;
   }
@@ -114,6 +105,22 @@ export async function POST(request: Request) {
       return reply({ error: result.message }, result.status || 502);
     }
     return reply({ ok: true, id: result.data.id });
+  }
+
+  if (purpose === "site") {
+    const key = form.get("key");
+    if (typeof key !== "string" || !/^[a-z_]+$/.test(key)) {
+      return reply({ error: "Unknown image place." }, 400);
+    }
+    const result = await apiRequest(
+      `/admin/site-images/${encodeURIComponent(key)}`,
+      { method: "PUT", token, form: outgoing, timeoutMs: SLOW },
+    );
+    if (!result.ok) {
+      return reply({ error: result.message }, result.status || 502);
+    }
+    revalidatePath("/admin", "layout");
+    return reply({ ok: true });
   }
 
   if (purpose === "player" || purpose === "staff" || purpose === "thumbnail") {
