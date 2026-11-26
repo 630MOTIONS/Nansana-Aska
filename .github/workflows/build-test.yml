@@ -21,7 +21,6 @@ jobs:
         env:
           NEXT_PUBLIC_API_URL: https://nansana-aska-api.onrender.com
           ADMIN_API_URL: https://nansana-aska-api.onrender.com
-          PREVIEW_BANNER: "1"
       - name: Assemble release
         run: |
           mkdir -p release/.next
